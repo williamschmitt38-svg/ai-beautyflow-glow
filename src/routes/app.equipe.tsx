@@ -20,7 +20,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 
-export const Route = createFileRoute("/app/equipe")({ head: () => pageHead("Equipe", "Equipe: gestão de salões de beleza no BeautyFlow."), component: Equipe });
+export const Route = createFileRoute("/app/equipe")({ head: () => pageHead("Equipe", "Equipe: gestão de salões de beleza no GlowFlow."), component: Equipe });
 
 const schema = z.object({
   email: z.string().email(),

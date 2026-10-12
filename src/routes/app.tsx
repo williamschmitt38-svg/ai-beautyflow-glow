@@ -9,7 +9,7 @@ import { useSalao } from "@/hooks/useSalao";
 import { useSalonBilling } from "@/hooks/useSalonBilling";
 import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/app")({ head: () => pageHead("Meu salão", "Meu salão: gestão de salões de beleza no BeautyFlow."),
+export const Route = createFileRoute("/app")({ head: () => pageHead("Meu salão", "Meu salão: gestão de salões de beleza no GlowFlow."),
   component: AppLayout,
 });
 

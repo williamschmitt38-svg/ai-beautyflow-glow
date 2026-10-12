@@ -36,7 +36,7 @@ export function SalonBilling({ salao }: { salao: Database['public']['Tables']['s
   const hasSubscription = current?.canManage && !['canceled', 'incomplete_expired'].includes(current.status);
   return <div className="space-y-6 py-4">
     <div className="flex flex-wrap items-start justify-between gap-4 border-b pb-6">
-      <div className="space-y-2"><h2 className="flex items-center gap-2 text-xl font-semibold"><CreditCard className="h-5 w-5 text-primary" /> Assinatura BeautyFlow</h2>
+      <div className="space-y-2"><h2 className="flex items-center gap-2 text-xl font-semibold"><CreditCard className="h-5 w-5 text-primary" /> Assinatura GlowFlow</h2>
         <div className="flex flex-wrap items-center gap-2 text-sm"><span>{billingPlans[plan].name} · R$ {billingPlans[plan].amount}/mês</span><Badge variant={current?.subscribed ? 'default' : 'secondary'}>{labels[state] || state}</Badge></div>
         {salao.trial_ate && !current?.subscribed && <p className="text-sm text-muted-foreground">Período gratuito até {format(parseISO(salao.trial_ate), 'dd/MM/yyyy')}</p>}
         {current?.periodEnd && <p className="text-sm text-muted-foreground">{current.cancelAtPeriodEnd ? 'Acesso até' : 'Próxima renovação'}: {format(parseISO(current.periodEnd), 'dd/MM/yyyy')}</p>}

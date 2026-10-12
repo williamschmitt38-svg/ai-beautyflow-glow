@@ -52,10 +52,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "BeautyFlow AI" },
+      { title: "GlowFlow" },
       { name: "description", content: "Gestão completa para salões de beleza" },
-      { property: "og:title", content: "BeautyFlow AI" },
-      { name: "twitter:title", content: "BeautyFlow AI" },
+      { property: "og:title", content: "GlowFlow" },
+      { name: "twitter:title", content: "GlowFlow" },
       { property: "og:description", content: "Gestão completa para salões de beleza" },
       { name: "twitter:description", content: "Gestão completa para salões de beleza" },
       { name: "twitter:card", content: "summary_large_image" },

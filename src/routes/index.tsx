@@ -17,9 +17,9 @@ export const Route = createFileRoute("/")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { title: "BeautyFlow AI — Sistema premium para salões de beleza" },
+      { title: "GlowFlow — Sistema premium para salões de beleza" },
       { name: "description", content: "Agenda inteligente, CRM, pacotes, financeiro e IA que cresce seu salão no automático. Teste 14 dias grátis, sem cartão." },
-      { property: "og:title", content: "BeautyFlow AI — Sistema premium para salões de beleza" },
+      { property: "og:title", content: "GlowFlow — Sistema premium para salões de beleza" },
       { property: "og:description", content: "Agenda inteligente, CRM premium, pacotes, IA de crescimento. Tudo num só sistema." },
     ],
   }),
@@ -68,7 +68,7 @@ const insights = [
 ];
 
 const testimonials = [
-  { nome: "Ana Silveira", salao: "Studio Ana Silveira", txt: "Reduzi no-show em 60% e aumentei o ticket médio em 35% no primeiro mês de uso do BeautyFlow." },
+  { nome: "Ana Silveira", salao: "Studio Ana Silveira", txt: "Reduzi no-show em 60% e aumentei o ticket médio em 35% no primeiro mês de uso do GlowFlow." },
   { nome: "Marcos Costa", salao: "Espaço Beleza Premium", txt: "A IA de reativação trouxe clientes de volta. Em 3 semanas recuperei R$ 4.200 em serviços." },
   { nome: "Juliana Ramos", salao: "Rede Bella Vita", txt: "Gerenciar 3 unidades ficou simples. Cada salão é um ambiente isolado, mas eu vejo tudo." },
 ];
@@ -80,12 +80,12 @@ const planos = [
 ];
 
 const faqs = [
-  { q: "Preciso instalar alguma coisa?", a: "Não. O BeautyFlow roda 100% no navegador, no celular e no computador. Basta criar a conta e começar a usar." },
+  { q: "Preciso instalar alguma coisa?", a: "Não. O GlowFlow roda 100% no navegador, no celular e no computador. Basta criar a conta e começar a usar." },
   { q: "E se eu já tiver dados em outro sistema?", a: "Importamos sua base de clientes e serviços por planilha. Nosso time faz a migração com você no plano Pro e Premium." },
   { q: "A IA realmente funciona?", a: "Sim. A IA analisa o histórico real do seu salão e gera sugestões concretas — quem reativar, qual horário promover, qual pacote oferecer." },
   { q: "Posso cancelar quando quiser?", a: "Sim, sem multa e sem fidelidade. O teste é de 14 dias e nem pedimos cartão de crédito." },
   { q: "Funciona para barbearia e estética?", a: "Funciona para qualquer salão de beleza, estética, barbearia, nail bar ou clínica de bem-estar." },
-  { q: "Como funciona o link de agendamento público?", a: "Cada salão recebe um link único (ex: beautyflow.app/agendar/seu-salao). Você compartilha no Instagram, WhatsApp e o cliente reserva sozinho." },
+  { q: "Como funciona o link de agendamento público?", a: "Cada salão recebe um link único (ex: glowflow.app/agendar/seu-salao). Você compartilha no Instagram, WhatsApp e o cliente reserva sozinho." },
 ];
 
 function Landing() {
@@ -101,7 +101,7 @@ function Landing() {
             <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${GRADIENT} text-white shadow-lg shadow-rose-500/30`}>
               <Sparkles className="h-5 w-5" />
             </div>
-            <span className="text-lg font-bold tracking-tight">BeautyFlow <span className={GRADIENT_TEXT}>AI</span></span>
+            <span className="text-lg font-bold tracking-tight">GlowFlow <span className={GRADIENT_TEXT}>AI</span></span>
           </Link>
           <nav className="hidden items-center gap-7 text-sm font-medium text-zinc-600 md:flex">
             <a href="#modulos" className="hover:text-zinc-900">Módulos</a>
@@ -194,7 +194,7 @@ function Landing() {
           <div className="mb-12 text-center">
             <Badge variant="outline" className="mb-3 border-rose-300 text-rose-600">Pra quem é</Badge>
             <h2 className="text-4xl font-black tracking-tight md:text-5xl">Reconhece alguma dessas dores?</h2>
-            <p className="mt-4 text-lg text-zinc-600">Se sim, o BeautyFlow foi feito para você.</p>
+            <p className="mt-4 text-lg text-zinc-600">Se sim, o GlowFlow foi feito para você.</p>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             {dores.map((d) => (
@@ -359,7 +359,7 @@ function Landing() {
         <div className="mx-auto max-w-3xl">
           <TrendingUp className="mx-auto mb-5 h-12 w-12" />
           <h2 className="text-4xl font-black tracking-tight md:text-5xl">Pronto para crescer no automático?</h2>
-          <p className="mt-4 text-lg text-white/90">Junte-se a +3.500 salões que já transformaram a gestão com BeautyFlow AI.</p>
+          <p className="mt-4 text-lg text-white/90">Junte-se a +3.500 salões que já transformaram a gestão com GlowFlow.</p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link to="/entrar">
               <Button size="lg" className="h-14 bg-white px-8 text-base font-bold text-rose-600 hover:bg-zinc-100">
@@ -380,9 +380,9 @@ function Landing() {
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 md:flex-row">
           <div className="flex items-center gap-2">
             <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${GRADIENT}`}><Sparkles className="h-4 w-4 text-white" /></div>
-            <span className="font-bold text-white">BeautyFlow AI</span>
+            <span className="font-bold text-white">GlowFlow</span>
           </div>
-          <p className="text-sm">© {new Date().getFullYear()} BeautyFlow AI — Sistema premium para salões de beleza</p>
+          <p className="text-sm">© {new Date().getFullYear()} GlowFlow — Sistema premium para salões de beleza</p>
         </div>
       </footer>
     </div>

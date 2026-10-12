@@ -7,7 +7,7 @@ import {
   SidebarProvider, SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-export const Route = createFileRoute("/demo")({ head: () => pageHead("Demonstração · Demonstração", "Demonstração · Demonstração: gestão de salões de beleza no BeautyFlow."),
+export const Route = createFileRoute("/demo")({ head: () => pageHead("Demonstração · Demonstração", "Demonstração · Demonstração: gestão de salões de beleza no GlowFlow."),
   component: DemoLayout,
 });
 
@@ -42,7 +42,7 @@ function DemoLayout() {
                 <Sparkles className="h-4 w-4" />
               </div>
               <div>
-                <div className="font-semibold leading-tight">BeautyFlow</div>
+                <div className="font-semibold leading-tight">GlowFlow</div>
                 <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Modo demonstração</div>
               </div>
             </div>

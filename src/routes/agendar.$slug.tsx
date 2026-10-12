@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/agendar/$slug")({
-  head: ({ params }) => pageHead(`Agendar online · ${params.slug}`, "Escolha seus serviços e agende pelo BeautyFlow."),
+  head: ({ params }) => pageHead(`Agendar online · ${params.slug}`, "Escolha seus serviços e agende pelo GlowFlow."),
   component: AgendarPublic,
 });
 
