@@ -61,7 +61,7 @@ function NovoSalao() {
                   <SelectContent>
                     <SelectItem value="starter">Starter — R$ 39</SelectItem>
                     <SelectItem value="pro">Pro — R$ 79</SelectItem>
-                    <SelectItem value="enterprise">Enterprise — R$ 149</SelectItem>
+                    <SelectItem value="enterprise">Premium — R$ 149</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
