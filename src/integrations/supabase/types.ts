@@ -604,6 +604,7 @@ export type Database = {
           categoria:
             | Database["public"]["Enums"]["servico_categoria_enum"]
             | null
+          category_id: string | null
           company_id: string
           created_at: string
           descricao: string | null
@@ -618,6 +619,7 @@ export type Database = {
           categoria?:
             | Database["public"]["Enums"]["servico_categoria_enum"]
             | null
+          category_id?: string | null
           company_id: string
           created_at?: string
           descricao?: string | null
@@ -632,6 +634,7 @@ export type Database = {
           categoria?:
             | Database["public"]["Enums"]["servico_categoria_enum"]
             | null
+          category_id?: string | null
           company_id?: string
           created_at?: string
           descricao?: string | null
@@ -643,7 +646,43 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "servico_category_salon_fkey"
+            columns: ["company_id", "category_id"]
+            isOneToOne: false
+            referencedRelation: "servico_categoria"
+            referencedColumns: ["company_id", "id"]
+          },
+          {
             foreignKeyName: "servico_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "salao"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      servico_categoria: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          nome: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          nome: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          nome?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "servico_categoria_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "salao"
