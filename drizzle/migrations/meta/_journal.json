@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791813156390,
+      "tag": "0000_fix_salao_insert_auth_users_permission",
+      "breakpoints": true
+    }
+  ]
+}
