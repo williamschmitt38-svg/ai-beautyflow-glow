@@ -13,7 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-export const Route = createFileRoute("/master/saloes")({ head: () => pageHead("Salões", "Salões: gestão de salões de beleza no GlowFlow."), component: Saloes });
+export const Route = createFileRoute("/master/saloes")({ head: () => pageHead("Salões", "Salões: gestão de salões de beleza no BeautyFlow."), component: Saloes });
 
 function Saloes() {
   const qc = useQueryClient();

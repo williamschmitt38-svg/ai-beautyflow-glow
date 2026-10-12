@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export const Route = createFileRoute("/master/novo")({ head: () => pageHead("Novo salão", "Novo salão: gestão de salões de beleza no GlowFlow."), component: NovoSalao });
+export const Route = createFileRoute("/master/novo")({ head: () => pageHead("Novo salão", "Novo salão: gestão de salões de beleza no BeautyFlow."), component: NovoSalao });
 
 const schema = z.object({
   nome_salao: z.string().min(2),

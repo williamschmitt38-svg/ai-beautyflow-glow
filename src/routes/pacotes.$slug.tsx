@@ -17,7 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/pacotes/$slug")({
-  head: ({ params }) => pageHead(`Pacotes do salão · ${params.slug}`, "Escolha seus serviços e agende pelo GlowFlow."),
+  head: ({ params }) => pageHead(`Pacotes do salão · ${params.slug}`, "Escolha seus serviços e agende pelo BeautyFlow."),
   component: PacotesPublic,
 });
 

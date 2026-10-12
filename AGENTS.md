@@ -1,7 +1,5 @@
 # Architecture rules
 
-- Reuse GlowFlowLogo for application brand displays and source landing prices from billingPlans; preserve existing route paths and payment identifiers so visual branding cannot break access or subscriptions.
-
 - Service categories are salon-scoped rows linked through servico.category_id with a tenant-consistent foreign key; deleting a category clears the link, preserving services, and populated tabs derive from current service assignments rather than the legacy enum.
 
 - Salon ownership RLS validates the authenticated email with `auth.jwt()` rather than querying `auth.users` as the caller, because managed authentication tables are not accessible through application roles.

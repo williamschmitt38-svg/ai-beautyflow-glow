@@ -28,7 +28,7 @@ export function CreateSalaoCard() {
     <div className="flex min-h-[80vh] items-center justify-center p-6">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Bem-vindo ao GlowFlow!</CardTitle>
+          <CardTitle>Bem-vindo ao BeautyFlow!</CardTitle>
           <CardDescription>Vamos cadastrar seu salão para começar.</CardDescription>
         </CardHeader>
         <CardContent>

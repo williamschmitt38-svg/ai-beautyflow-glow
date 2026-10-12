@@ -8,7 +8,6 @@ import {
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/useAuth";
-import { GlowFlowLogo } from "@/components/GlowFlowLogo";
 import { useSalao } from "@/hooks/useSalao";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -51,7 +50,10 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-2">
-          <GlowFlowLogo className="group-data-[collapsible=icon]:[&>span]:hidden" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
+            <Sparkles className="h-4 w-4" />
+          </div>
+          <span className="font-semibold">BeautyFlow</span>
         </div>
         {saloes.length > 1 && (
           <div className="px-2 pb-2">

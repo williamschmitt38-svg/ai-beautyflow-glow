@@ -5,7 +5,6 @@ import {
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/useAuth";
-import { GlowFlowLogo } from "@/components/GlowFlowLogo";
 
 const items = [
   { title: "Painel", url: "/master", icon: LayoutDashboard },
@@ -20,7 +19,10 @@ export function MasterSidebar() {
     <Sidebar collapsible="icon" className="master-theme">
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-2">
-          <div><GlowFlowLogo className="group-data-[collapsible=icon]:[&>span]:hidden" /><p className="mt-1 text-xs group-data-[collapsible=icon]:hidden">Master Admin</p></div>
+          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-destructive text-destructive-foreground">
+            <Shield className="h-4 w-4" />
+          </div>
+          <span className="font-semibold">Master Admin</span>
         </div>
       </SidebarHeader>
       <SidebarContent>

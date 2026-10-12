@@ -1,5 +1,4 @@
 import { pageHead } from "@/lib/page-head";
-import { GlowFlowLogo } from "@/components/GlowFlowLogo";
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { Sparkles, LayoutDashboard, Calendar, Users, Scissors, UserCog, Package, ArrowLeft, Brain, DollarSign, BarChart3, UsersRound, Settings } from "lucide-react";
 import {
@@ -8,7 +7,7 @@ import {
   SidebarProvider, SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-export const Route = createFileRoute("/demo")({ head: () => pageHead("Demonstração", "Conheça a gestão para beleza e bem-estar do GlowFlow."),
+export const Route = createFileRoute("/demo")({ head: () => pageHead("Demonstração · Demonstração", "Demonstração · Demonstração: gestão de salões de beleza no BeautyFlow."),
   component: DemoLayout,
 });
 
@@ -39,8 +38,11 @@ function DemoLayout() {
         <Sidebar collapsible="icon">
           <SidebarHeader>
             <div className="flex items-center gap-2 px-2 py-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
+                <Sparkles className="h-4 w-4" />
+              </div>
               <div>
-                <GlowFlowLogo className="group-data-[collapsible=icon]:[&>span]:hidden" />
+                <div className="font-semibold leading-tight">BeautyFlow</div>
                 <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Modo demonstração</div>
               </div>
             </div>

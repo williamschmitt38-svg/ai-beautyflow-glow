@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { demoServicos } from "@/lib/demo-seed";
 
-export const Route = createFileRoute("/demo/servicos")({ head: () => pageHead("Serviços · Demonstração", "Serviços · Demonstração: gestão de salões de beleza no GlowFlow."), component: DemoServicos });
+export const Route = createFileRoute("/demo/servicos")({ head: () => pageHead("Serviços · Demonstração", "Serviços · Demonstração: gestão de salões de beleza no BeautyFlow."), component: DemoServicos });
 
 function DemoServicos() {
   return (
