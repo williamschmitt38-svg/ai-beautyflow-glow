@@ -5,6 +5,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { TrialBanner } from "@/components/TrialBanner";
 import { useAuth } from "@/hooks/useAuth";
 import { useSalao } from "@/hooks/useSalao";
+import { useSalonBilling } from "@/hooks/useSalonBilling";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/app")({
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/app")({
 function AppLayout() {
   const { user, loading } = useAuth();
   const { saloes, salaoId, loading: loadingSaloes } = useSalao();
+  useSalonBilling(user ? salaoId : null);
   const path = useRouterState({ select: (r) => r.location.pathname });
 
   const { data: salao } = useQuery({

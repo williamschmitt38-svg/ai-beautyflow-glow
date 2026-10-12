@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { format, addDays } from "date-fns";
+import { SalonBilling } from "@/components/SalonBilling";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useSalao } from "@/hooks/useSalao";
@@ -19,7 +19,11 @@ import { Badge } from "@/components/ui/badge";
 import { QRCodeCanvas } from "qrcode.react";
 import { Copy, Check, MessageCircle, QrCode, Instagram, Download } from "lucide-react";
 
-export const Route = createFileRoute("/app/configuracoes")({ component: Configuracoes });
+export const Route = createFileRoute("/app/configuracoes")({
+  validateSearch: (search: Record<string, unknown>) => ({ tab: typeof search.tab === "string" ? search.tab : "salao", payment: typeof search.payment === "string" ? search.payment : undefined }),
+  head: () => ({ meta: [{ title: "Configurações e assinatura — BeautyFlow AI" }, { name: "description", content: "Gerencie seu salão e sua assinatura BeautyFlow." }, { property: "og:title", content: "Configurações e assinatura — BeautyFlow AI" }, { property: "og:description", content: "Gerencie seu salão e sua assinatura BeautyFlow." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
+  component: Configuracoes,
+});
 
 const salaoSchema = z.object({
   nome_salao: z.string().min(2),
@@ -35,6 +39,7 @@ type SalaoForm = z.infer<typeof salaoSchema>;
 
 function Configuracoes() {
   const { user } = useAuth();
+  const { tab } = Route.useSearch();
   const { salaoId } = useSalao();
   const qc = useQueryClient();
 
@@ -46,7 +51,7 @@ function Configuracoes() {
   return (
     <div className="max-w-4xl space-y-6">
       <PageHeader title="Configurações" description="Gerencie seu salão" />
-      <Tabs defaultValue="salao">
+      <Tabs defaultValue={tab}>
         <TabsList>
           <TabsTrigger value="salao">Salão</TabsTrigger>
           <TabsTrigger value="aparencia">Aparência</TabsTrigger>
@@ -74,7 +79,7 @@ function Configuracoes() {
         </TabsContent>
 
         <TabsContent value="cobranca">
-          {salao && <CobrancaTab salao={salao} onSaved={() => qc.invalidateQueries({ queryKey: ["salao"] })} />}
+          {salao && <SalonBilling salao={salao} />}
         </TabsContent>
 
         <TabsContent value="perfil">
@@ -132,44 +137,6 @@ function AparenciaForm({ salao, onSaved }: any) {
       <div className="space-y-2"><Label>Cor primária</Label><div className="flex items-center gap-3"><Input type="color" value={cor} onChange={(e: any) => setCor(e.target.value)} className="h-10 w-20 p-1" /><Input value={cor} onChange={(e: any) => setCor(e.target.value)} className="max-w-xs" /></div></div>
       <div className="space-y-2"><Label>URL do logo</Label><Input value={logo} onChange={(e: any) => setLogo(e.target.value)} placeholder="https://…" /></div>
       <Button onClick={save} disabled={loading}>Salvar</Button>
-    </div>
-  );
-}
-
-function CobrancaTab({ salao, onSaved }: any) {
-  const planoLabel = { starter: "R$ 39", pro: "R$ 79", enterprise: "R$ 149" } as any;
-  const statusVar: any = { trial: "secondary", ativo: "default", suspenso: "destructive", cancelado: "outline" };
-  async function alterarPlano(plano: "starter" | "pro" | "enterprise") {
-    const valor = plano === "starter" ? 39 : plano === "pro" ? 79 : 149;
-    const { error } = await supabase.from("salao").update({ plano, valor_plano: valor, status_cobranca: "ativo", trial_ate: null }).eq("id", salao.id);
-    if (error) return toast.error(error.message);
-    toast.success("Plano ativado (mock)"); onSaved();
-  }
-  async function estender() {
-    const novo = format(addDays(new Date(), 14), "yyyy-MM-dd");
-    const { error } = await supabase.from("salao").update({ trial_ate: novo, status_cobranca: "trial" }).eq("id", salao.id);
-    if (error) return toast.error(error.message);
-    toast.success("Trial estendido por 14 dias"); onSaved();
-  }
-  return (
-    <div className="space-y-4">
-      <Card>
-        <CardHeader><CardTitle>Plano atual</CardTitle></CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <div className="flex items-center gap-2"><span className="text-muted-foreground">Plano:</span> <Badge>{salao.plano}</Badge> <span className="text-muted-foreground">{planoLabel[salao.plano]}/mês</span></div>
-          <div className="flex items-center gap-2"><span className="text-muted-foreground">Status:</span> <Badge variant={statusVar[salao.status_cobranca]}>{salao.status_cobranca}</Badge></div>
-          {salao.trial_ate && <div><span className="text-muted-foreground">Trial até:</span> {format(new Date(salao.trial_ate), "dd/MM/yyyy")}</div>}
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader><CardTitle>Alterar plano (mock)</CardTitle><CardDescription>Em produção, integração com gateway. Aqui apenas registra.</CardDescription></CardHeader>
-        <CardContent className="flex flex-wrap gap-2">
-          <Button variant="outline" onClick={() => alterarPlano("starter")}>Starter — R$ 39</Button>
-          <Button onClick={() => alterarPlano("pro")}>Pro — R$ 79</Button>
-          <Button variant="outline" onClick={() => alterarPlano("enterprise")}>Enterprise — R$ 149</Button>
-          <Button variant="ghost" onClick={estender}>Estender trial +14d</Button>
-        </CardContent>
-      </Card>
     </div>
   );
 }
