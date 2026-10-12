@@ -50,6 +50,7 @@ function Configuracoes() {
         <TabsList>
           <TabsTrigger value="salao">Salão</TabsTrigger>
           <TabsTrigger value="aparencia">Aparência</TabsTrigger>
+          <TabsTrigger value="divulgacao">Divulgação</TabsTrigger>
           <TabsTrigger value="cobranca">Cobrança</TabsTrigger>
           <TabsTrigger value="perfil">Perfil</TabsTrigger>
         </TabsList>
