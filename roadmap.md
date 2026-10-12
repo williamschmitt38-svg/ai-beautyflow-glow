@@ -2,10 +2,10 @@
 
 # GlowFlow rebrand
 
-- [ ] Create the logo and matching favicon.
-- [ ] Renew the landing page, audience copy and monthly pricing.
-- [ ] Rename all visible app branding without changing access or integrations.
-- [ ] Verify mobile, desktop and free-trial navigation.
+- [x] Create the logo and matching favicon.
+- [x] Renew the landing page, audience copy and monthly pricing.
+- [x] Rename all visible app branding without changing access or integrations.
+- [x] Verify mobile, desktop and free-trial navigation (signup tab opens; no account created).
 
 - [x] Add salon-scoped categories and preserve existing service assignments.
 - [x] Add category management and database-backed service selection.
