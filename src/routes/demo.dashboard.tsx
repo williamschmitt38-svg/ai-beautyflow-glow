@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { demoDashboardKpis } from "@/lib/demo-seed";
 import { demoKpis, demoReceitaMensal, demoAgendamentosHoje, demoServicosTop, demoAniversariantesSemana } from "@/lib/demo-data";
 
-export const Route = createFileRoute("/demo/dashboard")({ head: () => pageHead("Dashboard · Demonstração", "Dashboard · Demonstração: gestão de salões de beleza no BeautyFlow."), component: DemoDashboard });
+export const Route = createFileRoute("/demo/dashboard")({ head: () => pageHead("Dashboard · Demonstração", "Dashboard · Demonstração: gestão de salões de beleza no GlowFlow."), component: DemoDashboard });
 
 const PIE_COLORS = ["#F43F5E", "#EC4899", "#8B5CF6", "#10B981", "#F59E0B"];
 

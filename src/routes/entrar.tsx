@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Sparkles } from "lucide-react";
+import { GlowFlowLogo } from "@/components/GlowFlowLogo";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export const Route = createFileRoute("/entrar")({ head: () => pageHead("Entrar", "Entrar: gestão de salões de beleza no BeautyFlow."),
+export const Route = createFileRoute("/entrar")({ head: () => pageHead("Entrar", "Entre ou crie sua conta GlowFlow para organizar seu negócio de estética e saúde."),
+  validateSearch: (search: Record<string, unknown>) => ({ tab: search.tab === "signup" ? "signup" : "signin" }),
   component: LoginPage,
 });
 
@@ -30,20 +31,18 @@ const signupSchema = loginSchema.extend({
 function LoginPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [tab, setTab] = useState("signin");
+  const search = Route.useSearch();
+  const [tab, setTab] = useState(search.tab);
 
   if (loading) return null;
   if (user) return <Navigate to="/app/dashboard" />;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-pink-50 via-background to-purple-50 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-surface p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-            <Sparkles className="h-6 w-6 text-primary" />
-          </div>
-          <CardTitle className="mt-2 text-2xl">BeautyFlow AI</CardTitle>
-          <CardDescription>Gestão inteligente para o seu salão</CardDescription>
+          <CardTitle className="mx-auto"><GlowFlowLogo /></CardTitle>
+          <CardDescription>Gestão inteligente para beleza e bem-estar</CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs value={tab} onValueChange={setTab}>

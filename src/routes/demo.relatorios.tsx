@@ -7,7 +7,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGri
 import { Download, TrendingUp, Users, Calendar, DollarSign } from "lucide-react";
 import { demoReceitaMensal, demoServicosTop, demoKpis } from "@/lib/demo-data";
 
-export const Route = createFileRoute("/demo/relatorios")({ head: () => pageHead("Relatórios · Demonstração", "Relatórios · Demonstração: gestão de salões de beleza no BeautyFlow."), component: DemoRelatorios });
+export const Route = createFileRoute("/demo/relatorios")({ head: () => pageHead("Relatórios · Demonstração", "Relatórios · Demonstração: gestão de salões de beleza no GlowFlow."), component: DemoRelatorios });
 
 const PIE = ["#F43F5E", "#EC4899", "#8B5CF6", "#10B981", "#F59E0B"];
 

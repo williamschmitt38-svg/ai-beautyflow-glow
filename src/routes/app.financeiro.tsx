@@ -19,7 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 
-export const Route = createFileRoute("/app/financeiro")({ head: () => pageHead("Financeiro", "Financeiro: gestão de salões de beleza no BeautyFlow."), component: Financeiro });
+export const Route = createFileRoute("/app/financeiro")({ head: () => pageHead("Financeiro", "Financeiro: gestão de salões de beleza no GlowFlow."), component: Financeiro });
 
 const schema = z.object({
   tipo: z.enum(["receita", "despesa"]),

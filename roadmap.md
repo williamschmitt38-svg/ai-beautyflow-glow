@@ -1,5 +1,12 @@
 # Service categories
 
+# GlowFlow rebrand
+
+- [x] Create the logo and matching favicon.
+- [x] Renew the landing page, audience copy and monthly pricing.
+- [x] Rename all visible app branding without changing access or integrations.
+- [x] Verify mobile, desktop and free-trial navigation (signup tab opens; no account created).
+
 - [x] Add salon-scoped categories and preserve existing service assignments.
 - [x] Add category management and database-backed service selection.
 - [x] Show only populated category tabs in internal and public catalogs.

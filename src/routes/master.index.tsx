@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export const Route = createFileRoute("/master/")({ head: () => pageHead("Painel master", "Painel master: gestão de salões de beleza no BeautyFlow."), component: Painel });
+export const Route = createFileRoute("/master/")({ head: () => pageHead("Painel master", "Painel master: gestão de salões de beleza no GlowFlow."), component: Painel });
 
 function Painel() {
   const { data } = useQuery({
