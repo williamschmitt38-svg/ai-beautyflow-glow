@@ -516,6 +516,41 @@ export type Database = {
         }
         Relationships: []
       }
+      salao_billing: {
+        Row: {
+          created_at: string
+          salao_id: string
+          stripe_customer_id: string
+          stripe_status: string | null
+          stripe_subscription_id: string | null
+          synced_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          salao_id: string
+          stripe_customer_id: string
+          stripe_status?: string | null
+          stripe_subscription_id?: string | null
+          synced_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          salao_id?: string
+          stripe_customer_id?: string
+          stripe_status?: string | null
+          stripe_subscription_id?: string | null
+          synced_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "salao_billing_salao_id_fkey"
+            columns: ["salao_id"]
+            isOneToOne: true
+            referencedRelation: "salao"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       salao_user: {
         Row: {
           ativo: boolean
