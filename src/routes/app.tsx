@@ -35,12 +35,12 @@ function AppLayout() {
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-surface">
         <AppSidebar />
-        <div className="flex flex-1 flex-col">
+        <div className="flex min-w-0 flex-1 flex-col">
           <TrialBanner salao={salao} />
           <header className="flex h-12 items-center border-b bg-background px-3">
             <SidebarTrigger />
           </header>
-          <main className="flex-1 p-6">
+          <main className="min-w-0 flex-1 overflow-x-auto p-4 sm:p-6">
             <Outlet />
           </main>
         </div>
