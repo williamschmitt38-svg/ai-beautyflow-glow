@@ -11,6 +11,7 @@ import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useAuth } from "@/hooks/useAuth";
+import glowflowEmblem from "@/assets/glowflow-emblem.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -74,9 +75,9 @@ const testimonials = [
 ];
 
 const planos = [
-  { nome: "Starter", preco: "R$ 197", desc: "Para salões começando a se organizar.", features: ["Até 2 profissionais", "Agenda completa", "CRM de clientes", "Link público de agendamento", "Relatórios básicos"] },
-  { nome: "Pro", preco: "R$ 397", desc: "O plano mais escolhido por salões em crescimento.", features: ["Até 8 profissionais", "Tudo do Starter", "AI Growth Engine", "Pacotes e sessões", "WhatsApp ilimitado", "Suporte prioritário"], destaque: true },
-  { nome: "Premium", preco: "R$ 697", desc: "Para redes e operações high-end.", features: ["Profissionais ilimitados", "White-label", "Multi-unidade", "API e integrações", "Onboarding dedicado", "Gerente de sucesso"] },
+  { nome: "Starter", preco: "R$ 39,00", desc: "Para salões começando a se organizar.", features: ["Até 2 profissionais", "Agenda completa", "CRM de clientes", "Link público de agendamento", "Relatórios básicos"] },
+  { nome: "Pro", preco: "R$ 79,00", desc: "O plano mais escolhido por salões em crescimento.", features: ["Até 8 profissionais", "Tudo do Starter", "Criação de um Bio Site personalizado", "AI Growth Engine", "Pacotes e sessões", "WhatsApp ilimitado", "Suporte prioritário"], destaque: true },
+  { nome: "Premium", preco: "R$ 149,00", desc: "Para redes e operações high-end.", features: ["Profissionais ilimitados", "Criação de uma Página de Vendas personalizada", "White-label", "Multi-unidade", "API e integrações", "Onboarding dedicado", "Gerente de sucesso"] },
 ];
 
 const faqs = [
@@ -96,22 +97,20 @@ function Landing() {
     <div className="min-h-screen bg-white text-zinc-900">
       {/* NAVBAR */}
       <header className="sticky top-0 z-40 border-b border-zinc-200/70 bg-white/85 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
-          <Link to="/" className="flex items-center gap-2">
-            <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${GRADIENT} text-white shadow-lg shadow-rose-500/30`}>
-              <Sparkles className="h-5 w-5" />
-            </div>
-            <span className="text-lg font-bold tracking-tight">GlowFlow <span className={GRADIENT_TEXT}>AI</span></span>
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-3 gap-y-2 px-4 py-3 sm:px-6">
+          <Link to="/" aria-label="GlowFlow — página inicial" className="flex shrink-0 items-center gap-2">
+            <img src={glowflowEmblem} alt="" width={40} height={40} className="h-10 w-10 object-contain" />
+            <span className="text-lg font-bold">GlowFlow</span>
           </Link>
-          <nav className="hidden items-center gap-7 text-sm font-medium text-zinc-600 md:flex">
+          <nav className="hidden items-center gap-7 text-sm font-medium text-zinc-600 lg:flex">
             <a href="#modulos" className="hover:text-zinc-900">Módulos</a>
             <a href="#como" className="hover:text-zinc-900">Como funciona</a>
             <a href="#planos" className="hover:text-zinc-900">Planos</a>
             <Link to="/demo/dashboard" className="hover:text-zinc-900">Demo</Link>
           </nav>
-          <div className="flex items-center gap-2">
-            <Link to="/entrar"><Button variant="ghost" size="sm">Entrar</Button></Link>
-            <Link to="/entrar"><Button size="sm" className={`${GRADIENT} text-white hover:opacity-90`}>Começar grátis</Button></Link>
+          <div className="flex items-center gap-1 sm:gap-2">
+            <Link to="/entrar"><Button variant="ghost" size="sm" className="px-2 sm:px-3">Entrar</Button></Link>
+            <Link to="/entrar"><Button size="sm" className="bg-landing-ink px-2 text-landing-surface hover:bg-landing-ink/90 sm:px-3">Começar grátis</Button></Link>
           </div>
         </div>
       </header>
@@ -303,31 +302,31 @@ function Landing() {
             <h2 className="text-4xl font-black tracking-tight md:text-5xl">Para cada <span className={GRADIENT_TEXT}>tamanho de salão</span></h2>
             <p className="mt-4 text-lg text-zinc-600">14 dias grátis em qualquer plano. Sem cartão.</p>
           </div>
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid items-stretch gap-8 lg:grid-cols-3">
             {planos.map((p) => (
-              <Card key={p.nome} className={p.destaque ? "relative scale-105 border-0 bg-zinc-900 text-white shadow-2xl shadow-rose-500/20" : "border-zinc-200 bg-white"}>
+              <Card key={p.nome} className={p.destaque ? "relative min-w-0 rounded-lg border-landing-ink bg-landing-ink text-landing-surface" : "min-w-0 rounded-lg border-landing-border bg-landing-surface text-landing-ink"}>
                 {p.destaque && (
-                  <Badge className={`absolute -top-3 left-1/2 -translate-x-1/2 ${GRADIENT} text-white shadow-lg`}>
+                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap bg-landing-accent text-landing-ink">
                     <Crown className="mr-1 h-3 w-3" /> Mais escolhido
                   </Badge>
                 )}
-                <CardContent className="p-8">
+                <CardContent className="flex h-full flex-col p-6 sm:p-8 lg:p-6">
                   <h3 className="text-xl font-bold">{p.nome}</h3>
-                  <div className="mt-3">
-                    <span className="text-5xl font-black">{p.preco}</span>
-                    <span className={p.destaque ? "text-zinc-400" : "text-zinc-500"}>/mês</span>
+                  <div className="mt-3 flex flex-wrap items-baseline gap-x-1 gap-y-1">
+                    <span className="whitespace-nowrap text-4xl font-black">{p.preco}</span>
+                    <span className={p.destaque ? "text-landing-surface/75" : "text-landing-muted"}>/mês</span>
                   </div>
-                  <p className={`mt-3 text-sm ${p.destaque ? "text-zinc-400" : "text-zinc-600"}`}>{p.desc}</p>
-                  <ul className="mt-7 space-y-3">
+                  <p className={`mt-3 text-sm ${p.destaque ? "text-landing-surface/75" : "text-landing-muted"}`}>{p.desc}</p>
+                  <ul className="mb-7 mt-7 flex-1 space-y-3">
                     {p.features.map((f) => (
                       <li key={f} className="flex items-start gap-2 text-sm">
-                        <CheckCircle2 className={`mt-0.5 h-4 w-4 shrink-0 ${p.destaque ? "text-rose-400" : "text-rose-500"}`} />
+                        <CheckCircle2 className={`mt-0.5 h-4 w-4 shrink-0 ${p.destaque ? "text-landing-accent" : "text-landing-ink"}`} />
                         <span>{f}</span>
                       </li>
                     ))}
                   </ul>
-                  <Link to="/entrar" className="mt-7 block">
-                    <Button className={p.destaque ? `w-full ${GRADIENT} text-white hover:opacity-90` : "w-full"} variant={p.destaque ? "default" : "outline"}>Começar grátis</Button>
+                  <Link to="/entrar" className="block">
+                    <Button className={p.destaque ? "w-full bg-landing-accent text-landing-ink hover:bg-landing-accent/90" : "w-full border-landing-border bg-landing-surface text-landing-ink hover:bg-landing-accent"} variant={p.destaque ? "default" : "outline"}>Começar grátis</Button>
                   </Link>
                 </CardContent>
               </Card>
@@ -379,7 +378,7 @@ function Landing() {
       <footer className="bg-zinc-900 px-6 py-12 text-zinc-400">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 md:flex-row">
           <div className="flex items-center gap-2">
-            <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${GRADIENT}`}><Sparkles className="h-4 w-4 text-white" /></div>
+            <img src={glowflowEmblem} alt="" loading="lazy" width={36} height={36} className="h-9 w-9 rounded-md bg-landing-surface object-contain p-1" />
             <span className="font-bold text-white">GlowFlow</span>
           </div>
           <p className="text-sm">© {new Date().getFullYear()} GlowFlow — Sistema premium para salões de beleza</p>
