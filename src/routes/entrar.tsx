@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export const Route = createFileRoute("/entrar")({ head: () => pageHead("Entrar", "Entrar: gestão de salões de beleza no BeautyFlow."),
+export const Route = createFileRoute("/entrar")({ head: () => pageHead("Entrar", "Entrar: gestão de salões de beleza no GlowFlow."),
   component: LoginPage,
 });
 
@@ -42,7 +42,7 @@ function LoginPage() {
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
             <Sparkles className="h-6 w-6 text-primary" />
           </div>
-          <CardTitle className="mt-2 text-2xl">BeautyFlow AI</CardTitle>
+          <CardTitle className="mt-2 text-2xl">GlowFlow</CardTitle>
           <CardDescription>Gestão inteligente para o seu salão</CardDescription>
         </CardHeader>
         <CardContent>

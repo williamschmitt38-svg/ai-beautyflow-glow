@@ -20,7 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 
-export const Route = createFileRoute("/app/agendamentos")({ head: () => pageHead("Agendamentos", "Agendamentos: gestão de salões de beleza no BeautyFlow."), component: Agendamentos });
+export const Route = createFileRoute("/app/agendamentos")({ head: () => pageHead("Agendamentos", "Agendamentos: gestão de salões de beleza no GlowFlow."), component: Agendamentos });
 
 const STATUSES = ["agendado", "confirmado", "chegou", "concluido", "cancelado"] as const;
 const PAGAMENTOS = ["Pix", "Cartao", "Dinheiro", "Transferencia", "Pacote"] as const;

@@ -42,7 +42,7 @@ export const createSalonPortal = createServerFn({ method: 'POST' })
     if (!key) throw new Error('A Stripe ainda não está configurada.');
     const customer = await billingCustomer(key, salon);
     const config = await stripeRequest(key, 'billing_portal/configurations', {
-      'business_profile[headline]': 'Assinatura BeautyFlow',
+      'business_profile[headline]': 'Assinatura GlowFlow',
       'features[payment_method_update][enabled]': 'true', 'features[invoice_history][enabled]': 'true',
       'features[subscription_cancel][enabled]': 'true', 'features[subscription_cancel][mode]': 'at_period_end',
       'features[subscription_update][enabled]': 'true',
