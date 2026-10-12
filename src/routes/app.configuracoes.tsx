@@ -69,6 +69,10 @@ function Configuracoes() {
           </Card>
         </TabsContent>
 
+        <TabsContent value="divulgacao">
+          {salao && <DivulgacaoTab salao={salao} />}
+        </TabsContent>
+
         <TabsContent value="cobranca">
           {salao && <CobrancaTab salao={salao} onSaved={() => qc.invalidateQueries({ queryKey: ["salao"] })} />}
         </TabsContent>
