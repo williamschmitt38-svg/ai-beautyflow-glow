@@ -44,7 +44,7 @@ function AgendarPublic() {
   const createAg = useServerFn(createPublicAgendamento);
 
   const [step, setStep] = useState(1);
-  const [category, setCategory] = useState("Todos");
+  const [category, setCategory] = useState("all");
   const [servicoId, setServicoId] = useState<string>("");
   const [profId, setProfId] = useState<string>("");
   const [data, setData] = useState<string>(new Date().toISOString().slice(0, 10));
@@ -109,9 +109,9 @@ function AgendarPublic() {
   const selectedServico = salaoData.servicos.find((s: any) => s.id === servicoId);
   const selectedProf = salaoData.profissionais.find((p: any) => p.id === profId);
   const today = new Date().toISOString().slice(0, 10);
-  const categories = Array.from(new Set(salaoData.servicos.map((s) => s.categoria).filter((name): name is string => !!name))).sort((a, b) => a.localeCompare(b, "pt-BR"));
-  const activeCategory = categories.includes(category) ? category : "Todos";
-  const visibleServices = salaoData.servicos.filter((s) => activeCategory === "Todos" || s.categoria === activeCategory);
+  const categories = Array.from(new Map(salaoData.servicos.flatMap((s) => s.category_id && s.categoria ? [[s.category_id, { id: s.category_id, nome: s.categoria }] as const] : [])).values()).sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+  const activeCategory = categories.some((c) => c.id === category) ? category : "all";
+  const visibleServices = salaoData.servicos.filter((s) => activeCategory === "all" || s.category_id === activeCategory);
 
   const canNext =
     (step === 1 && !!servicoId) ||
@@ -161,7 +161,7 @@ function AgendarPublic() {
             <h2 className="mb-3 text-lg font-semibold">Escolha o serviço</h2>
             <Tabs value={activeCategory} onValueChange={setCategory} className="mb-4">
               <TabsList className="h-auto max-w-full flex-wrap justify-start">
-                {["Todos", ...categories].map((name) => <TabsTrigger key={name} value={name} className="max-w-full whitespace-normal break-words">{name}</TabsTrigger>)}
+                {[{ id: "all", nome: "Todos" }, ...categories].map((c) => <TabsTrigger key={c.id} value={c.id} className="max-w-full whitespace-normal break-words">{c.nome}</TabsTrigger>)}
               </TabsList>
             </Tabs>
             <div className="grid gap-2 sm:grid-cols-2">
