@@ -302,31 +302,31 @@ function Landing() {
             <h2 className="text-4xl font-black tracking-tight md:text-5xl">Para cada <span className={GRADIENT_TEXT}>tamanho de salão</span></h2>
             <p className="mt-4 text-lg text-zinc-600">14 dias grátis em qualquer plano. Sem cartão.</p>
           </div>
-          <div className="grid items-stretch gap-8 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-3">
             {planos.map((p) => (
-              <Card key={p.nome} className={p.destaque ? "relative min-w-0 rounded-lg border-landing-ink bg-landing-ink text-landing-surface" : "min-w-0 rounded-lg border-landing-border bg-landing-surface text-landing-ink"}>
+              <Card key={p.nome} className={p.destaque ? "relative min-w-0 md:scale-105 border-0 bg-zinc-900 text-white shadow-2xl shadow-rose-500/20" : "min-w-0 border-zinc-200 bg-white"}>
                 {p.destaque && (
-                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap bg-landing-accent text-landing-ink">
+                  <Badge className={`absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap ${GRADIENT} text-white shadow-lg`}>
                     <Crown className="mr-1 h-3 w-3" /> Mais escolhido
                   </Badge>
                 )}
-                <CardContent className="flex h-full flex-col p-6 sm:p-8 lg:p-6">
+                <CardContent className="p-8 md:p-6 lg:p-8">
                   <h3 className="text-xl font-bold">{p.nome}</h3>
-                  <div className="mt-3 flex flex-wrap items-baseline gap-x-1 gap-y-1">
-                    <span className="whitespace-nowrap text-4xl font-black">{p.preco}</span>
-                    <span className={p.destaque ? "text-landing-surface/75" : "text-landing-muted"}>/mês</span>
+                  <div className="mt-3 flex flex-wrap items-baseline gap-x-1">
+                    <span className="whitespace-nowrap text-4xl font-black lg:text-5xl">{p.preco}</span>
+                    <span className={p.destaque ? "text-zinc-400" : "text-zinc-500"}>/mês</span>
                   </div>
-                  <p className={`mt-3 text-sm ${p.destaque ? "text-landing-surface/75" : "text-landing-muted"}`}>{p.desc}</p>
-                  <ul className="mb-7 mt-7 flex-1 space-y-3">
+                  <p className={`mt-3 text-sm ${p.destaque ? "text-zinc-400" : "text-zinc-600"}`}>{p.desc}</p>
+                  <ul className="mt-7 space-y-3">
                     {p.features.map((f) => (
                       <li key={f} className="flex items-start gap-2 text-sm">
-                        <CheckCircle2 className={`mt-0.5 h-4 w-4 shrink-0 ${p.destaque ? "text-landing-accent" : "text-landing-ink"}`} />
+                        <CheckCircle2 className={`mt-0.5 h-4 w-4 shrink-0 ${p.destaque ? "text-rose-400" : "text-rose-500"}`} />
                         <span>{f}</span>
                       </li>
                     ))}
                   </ul>
-                  <Link to="/entrar" className="block">
-                    <Button className={p.destaque ? "w-full bg-landing-accent text-landing-ink hover:bg-landing-accent/90" : "w-full border-landing-border bg-landing-surface text-landing-ink hover:bg-landing-accent"} variant={p.destaque ? "default" : "outline"}>Começar grátis</Button>
+                  <Link to="/entrar" className="mt-7 block">
+                    <Button className={p.destaque ? `w-full ${GRADIENT} text-white hover:opacity-90` : "w-full"} variant={p.destaque ? "default" : "outline"}>Começar grátis</Button>
                   </Link>
                 </CardContent>
               </Card>
