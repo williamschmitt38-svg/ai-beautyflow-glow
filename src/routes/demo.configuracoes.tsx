@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/page-head";
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Building2, Palette, Bell, CreditCard, MessageSquare, Globe } from "lucide-react";
 
-export const Route = createFileRoute("/demo/configuracoes")({ component: DemoConfig });
+export const Route = createFileRoute("/demo/configuracoes")({ head: () => pageHead("Configurações · Demonstração", "Configurações · Demonstração: gestão de salões de beleza no BeautyFlow."), component: DemoConfig });
 
 function DemoConfig() {
   return (

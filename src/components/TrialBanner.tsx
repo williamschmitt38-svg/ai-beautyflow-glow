@@ -5,7 +5,7 @@ export function TrialBanner({ salao }: { salao: any }) {
   if (!salao) return null;
   const cob = salao.status_cobranca;
   if (cob === "ativo") return null;
-  if (cob === "suspenso" || cob === "cancelado") {
+  if (cob === "suspenso" || cob === "cancelado" || cob === "inadimplente") {
     return (
       <div className="flex items-center gap-2 border-b border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive">
         <AlertTriangle className="h-4 w-4" />

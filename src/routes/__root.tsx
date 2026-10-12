@@ -58,8 +58,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:title", content: "BeautyFlow AI" },
       { property: "og:description", content: "Gestão completa para salões de beleza" },
       { name: "twitter:description", content: "Gestão completa para salões de beleza" },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/106778e6-1f0e-4ab8-9d9b-835ef74820c9/id-preview-e4b43d21--d7eeda1c-e33e-48a1-bec5-e5d337ebc898.lovable.app-1779628036141.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/106778e6-1f0e-4ab8-9d9b-835ef74820c9/id-preview-e4b43d21--d7eeda1c-e33e-48a1-bec5-e5d337ebc898.lovable.app-1779628036141.png" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:type", content: "website" },
     ],

@@ -15,6 +15,8 @@ import { useAuth } from "@/hooks/useAuth";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "BeautyFlow AI — Sistema premium para salões de beleza" },
       { name: "description", content: "Agenda inteligente, CRM, pacotes, financeiro e IA que cresce seu salão no automático. Teste 14 dias grátis, sem cartão." },
       { property: "og:title", content: "BeautyFlow AI — Sistema premium para salões de beleza" },

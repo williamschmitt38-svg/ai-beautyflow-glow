@@ -1,10 +1,11 @@
+import { pageHead } from "@/lib/page-head";
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { demoPacotes } from "@/lib/demo-seed";
 
-export const Route = createFileRoute("/demo/pacotes")({ component: DemoPacotes });
+export const Route = createFileRoute("/demo/pacotes")({ head: () => pageHead("Pacotes · Demonstração", "Pacotes · Demonstração: gestão de salões de beleza no BeautyFlow."), component: DemoPacotes });
 
 function DemoPacotes() {
   return (

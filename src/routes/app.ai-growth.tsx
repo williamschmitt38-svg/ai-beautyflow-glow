@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/page-head";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -10,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { demoAIInsights, type AIInsight } from "@/lib/demo-seed";
 
-export const Route = createFileRoute("/app/ai-growth")({ component: AIGrowth });
+export const Route = createFileRoute("/app/ai-growth")({ head: () => pageHead("AI Growth", "AI Growth: gestão de salões de beleza no BeautyFlow."), component: AIGrowth });
 
 const severityMap = {
   alta: { label: "ALTA", color: "bg-rose-500/15 text-rose-600 border-rose-500/30" },

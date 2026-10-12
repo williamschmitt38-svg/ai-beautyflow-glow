@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/page-head";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -18,7 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export const Route = createFileRoute("/app/servicos")({ component: Servicos });
+export const Route = createFileRoute("/app/servicos")({ head: () => pageHead("Serviços", "Serviços: gestão de salões de beleza no BeautyFlow."), component: Servicos });
 
 const CATS = ["Cabelo", "Unhas", "Estetica", "Maquiagem", "Massagem"] as const;
 const schema = z.object({

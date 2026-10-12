@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/page-head";
 import { createFileRoute } from "@tanstack/react-router";
 import { DollarSign, TrendingUp, TrendingDown, Wallet } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from "recharts";
@@ -7,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { demoDashboardKpis, demoLancamentos } from "@/lib/demo-seed";
 
-export const Route = createFileRoute("/demo/financeiro")({ component: DemoFin });
+export const Route = createFileRoute("/demo/financeiro")({ head: () => pageHead("Financeiro · Demonstração", "Financeiro · Demonstração: gestão de salões de beleza no BeautyFlow."), component: DemoFin });
 
 function DemoFin() {
   const d = demoDashboardKpis();
