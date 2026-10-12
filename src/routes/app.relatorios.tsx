@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/page-head";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { format, startOfMonth, endOfMonth, subMonths } from "date-fns";
@@ -8,7 +9,7 @@ import { useSalao } from "@/hooks/useSalao";
 import { PageHeader } from "@/components/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export const Route = createFileRoute("/app/relatorios")({ component: Relatorios });
+export const Route = createFileRoute("/app/relatorios")({ head: () => pageHead("Relatórios", "Relatórios: gestão de salões de beleza no BeautyFlow."), component: Relatorios });
 
 const COLORS = ["hsl(var(--primary))", "#22c55e", "#3b82f6", "#f59e0b", "#a855f7", "#06b6d4"];
 

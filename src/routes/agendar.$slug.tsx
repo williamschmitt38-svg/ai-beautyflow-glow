@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/page-head";
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -16,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/agendar/$slug")({
-  head: ({ params }) => ({ meta: [{ title: `Agendar online — ${params.slug}` }] }),
+  head: ({ params }) => pageHead(`Agendar online · ${params.slug}`, "Escolha seus serviços e agende pelo BeautyFlow."),
   component: AgendarPublic,
 });
 

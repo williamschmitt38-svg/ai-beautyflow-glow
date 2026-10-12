@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/page-head";
 import { createFileRoute, Navigate, Outlet, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -8,7 +9,7 @@ import { useSalao } from "@/hooks/useSalao";
 import { useSalonBilling } from "@/hooks/useSalonBilling";
 import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/app")({
+export const Route = createFileRoute("/app")({ head: () => pageHead("Meu salão", "Meu salão: gestão de salões de beleza no BeautyFlow."),
   component: AppLayout,
 });
 

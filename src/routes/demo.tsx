@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/page-head";
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { Sparkles, LayoutDashboard, Calendar, Users, Scissors, UserCog, Package, ArrowLeft, Brain, DollarSign, BarChart3, UsersRound, Settings } from "lucide-react";
 import {
@@ -6,7 +7,7 @@ import {
   SidebarProvider, SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-export const Route = createFileRoute("/demo")({
+export const Route = createFileRoute("/demo")({ head: () => pageHead("Demonstração · Demonstração", "Demonstração · Demonstração: gestão de salões de beleza no BeautyFlow."),
   component: DemoLayout,
 });
 

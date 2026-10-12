@@ -3,9 +3,9 @@ import type { Database } from '@/integrations/supabase/types';
 import { billingPlans, type BillingPlan } from './billing-plans';
 
 export async function authorizeBilling(db: SupabaseClient<Database>, id: string) {
-  const { data: allowed, error } = await db.rpc('has_salao_role', { _salao_id: id, _roles: ['owner'] });
+  const { data: allowed, error } = await db.from('salao_user').select('id').eq('salao_id', id).eq('role', 'owner').eq('ativo', true).limit(1);
   const { data: master } = await db.rpc('is_super_admin');
-  if (error || (!allowed && !master)) throw new Error('Somente o dono do salão pode gerenciar a assinatura.');
+  if (error || (!allowed?.length && !master)) throw new Error('Somente o dono do salão pode gerenciar a assinatura.');
   const { data: salon, error: readError } = await db.from('salao').select('*').eq('id', id).single();
   if (readError || !salon) throw new Error('Salão não encontrado.');
   return salon;

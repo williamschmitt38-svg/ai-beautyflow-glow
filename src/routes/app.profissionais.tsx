@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/page-head";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -17,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export const Route = createFileRoute("/app/profissionais")({ component: Profissionais });
+export const Route = createFileRoute("/app/profissionais")({ head: () => pageHead("Profissionais", "Profissionais: gestão de salões de beleza no BeautyFlow."), component: Profissionais });
 
 const schema = z.object({
   nome: z.string().min(2),
