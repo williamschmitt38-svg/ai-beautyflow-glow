@@ -1,390 +1,142 @@
 import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
-import {
-  Sparkles, Calendar, Package, Users, BarChart3, DollarSign, Brain,
-  UserCheck, CheckCircle2, AlertCircle, Play, Star, ArrowRight, Zap,
-  TrendingUp, MessageCircle, Crown,
-} from "lucide-react";
+import { ArrowRight, ArrowUpRight, CalendarDays, BellRing, CreditCard, UsersRound, Check, Menu, X, Leaf, CheckCircle2 } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  Accordion, AccordionContent, AccordionItem, AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { GlowFlowLogo } from "@/components/GlowFlowLogo";
 import { useAuth } from "@/hooks/useAuth";
+import { billingPlans } from "@/lib/billing-plans";
+import clinic from "@/assets/glowflow-clinic.jpg";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { title: "BeautyFlow AI — Sistema premium para salões de beleza" },
-      { name: "description", content: "Agenda inteligente, CRM, pacotes, financeiro e IA que cresce seu salão no automático. Teste 14 dias grátis, sem cartão." },
-      { property: "og:title", content: "BeautyFlow AI — Sistema premium para salões de beleza" },
-      { property: "og:description", content: "Agenda inteligente, CRM premium, pacotes, IA de crescimento. Tudo num só sistema." },
-    ],
-  }),
+  head: () => ({ meta: [
+    { title: "GlowFlow — Gestão para profissionais de estética e saúde" },
+    { name: "description", content: "Do salão à clínica de estética: automatize sua agenda, receba pagamentos e encante seus clientes com o GlowFlow. Planos a partir de R$ 39/mês." },
+    { property: "og:title", content: "GlowFlow — Beleza, bem-estar e gestão inteligente" },
+    { property: "og:description", content: "Agenda online, gestão de clientes e planos para salões, clínicas de estética e massoterapeutas. Teste 14 dias grátis." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" },
+  ] }),
   component: Landing,
 });
 
-const GRADIENT = "bg-gradient-to-r from-rose-500 to-pink-500";
-const GRADIENT_TEXT = "bg-gradient-to-r from-rose-500 to-pink-500 bg-clip-text text-transparent";
-
-const modulos = [
-  { icon: Calendar, tag: "CORE", title: "Agenda Inteligente", desc: "Drag-and-drop, validação de conflitos, gestão por profissional, bloqueio de horários. Zero double-booking." },
-  { icon: Users, tag: "CORE", title: "CRM de Clientes", desc: "Ficha completa com histórico, observações, alergias, preferências, aniversário e indicadores de fidelidade." },
-  { icon: UserCheck, tag: "OPERACIONAL", title: "Gestão de Profissionais", desc: "Cadastro por especialidade, horários por dia, vínculo com agenda, comissão por serviço." },
-  { icon: Package, tag: "COMERCIAL", title: "Pacotes & Sessões", desc: "Pacotes com validade, sessões usadas, pagamentos parcelados, saldo restante por cliente." },
-  { icon: DollarSign, tag: "GESTÃO", title: "Financeiro & KPIs", desc: "Receita por período, ticket médio, formas de pagamento, projeções e DRE em tempo real." },
-  { icon: Brain, tag: "IA", title: "AI Growth Engine", desc: "Motor de IA que analisa dados, detecta oportunidades e gera mensagens personalizadas prontas para enviar." },
+const benefits = [
+  { icon: CalendarDays, name: "Agenda Online 24h", text: "Seu cliente escolhe o serviço e reserva um horário, mesmo quando você está atendendo." },
+  { icon: BellRing, name: "Lembretes Automáticos", text: "Mais cuidado em cada etapa, do agendamento ao próximo encontro." },
+  { icon: CreditCard, name: "Pagamento via App", text: "Organização financeira para acompanhar os pagamentos e cuidar do seu negócio." },
+  { icon: UsersRound, name: "Gestão de Clientes", text: "Histórico, preferências e informações reunidos para um atendimento mais próximo." },
 ];
-
-const dores = [
-  "Agenda no papel ou no WhatsApp — cheia de erros, conflitos e horários perdidos",
-  "Clientes sumindo sem que você perceba ou reaja a tempo de reativar",
-  "Sem controle de receita real — só um número solto no final do mês",
-  "Pacotes vendidos no caderno, sessões perdidas, clientes sem controle",
-  "Sem visão de quais serviços geram mais ou quais profissionais são mais rentáveis",
-  "No-show alto por falta de confirmação automática e lembrete pré-atendimento",
+const plans = [
+  { key: "starter" as const, description: "O essencial para uma rotina mais leve.", features: ["Agendamento essencial", "Agenda online 24h", "Cadastro e histórico de clientes", "Link público de agendamento"] },
+  { key: "pro" as const, description: "Mais presença. Mais controle. Mais possibilidades.", features: ["Tudo do Starter", "Link na Bio Personalizado", "Gestão avançada do negócio", "Pacotes e controle de sessões", "Relatórios financeiros"] },
+  { key: "enterprise" as const, description: "Uma experiência à altura do seu negócio.", features: ["Tudo do Pro", "Página de Vendas Exclusiva para o seu negócio", "Gestão para operações maiores", "Suporte prioritário"] },
 ];
-
-const steps = [
-  { n: "01", t: "Configure seu salão", d: "Nome, logo, cor da marca, slug público. Sistema com a cara do seu negócio em minutos." },
-  { n: "02", t: "Cadastre serviços e equipe", d: "Serviços com duração e valor, profissionais com especialidades e horários por dia." },
-  { n: "03", t: "Receba agendamentos", d: "Link público para o cliente agendar sozinho 24/7, ou lançamento manual pela recepção." },
-  { n: "04", t: "Cresça com IA", d: "Sistema analisa histórico, sugere ações concretas pra aumentar receita e reativar clientes." },
-];
-
-const aiBenefits = [
-  "Reativa clientes inativos automaticamente",
-  "Detecta horários fracos e sugere promoções",
-  "Mensagens prontas para WhatsApp em 1 clique",
-  "Insights de conversão por serviço e profissional",
-];
-
-const insights = [
-  { tag: "ALTA", color: "bg-rose-500/15 text-rose-300 border-rose-500/30", title: "8 clientes inativos há +45 dias", desc: "Recuperáveis com mensagem personalizada. Impacto estimado +R$ 2.800." },
-  { tag: "MÉDIA", color: "bg-amber-500/15 text-amber-300 border-amber-500/30", title: "Terças 14h-16h: 3 slots vagos", desc: "Padrão semanal de baixa ocupação. Sugestão: promo manicure expressa." },
-  { tag: "OPORTUNIDADE", color: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30", title: "Pacote facial: 60% de conversão", desc: "Campanha sugerida para base inativa. Impacto estimado +R$ 8.400." },
-];
-
-const testimonials = [
-  { nome: "Ana Silveira", salao: "Studio Ana Silveira", txt: "Reduzi no-show em 60% e aumentei o ticket médio em 35% no primeiro mês de uso do BeautyFlow." },
-  { nome: "Marcos Costa", salao: "Espaço Beleza Premium", txt: "A IA de reativação trouxe clientes de volta. Em 3 semanas recuperei R$ 4.200 em serviços." },
-  { nome: "Juliana Ramos", salao: "Rede Bella Vita", txt: "Gerenciar 3 unidades ficou simples. Cada salão é um ambiente isolado, mas eu vejo tudo." },
-];
-
-const planos = [
-  { nome: "Starter", preco: "R$ 197", desc: "Para salões começando a se organizar.", features: ["Até 2 profissionais", "Agenda completa", "CRM de clientes", "Link público de agendamento", "Relatórios básicos"] },
-  { nome: "Pro", preco: "R$ 397", desc: "O plano mais escolhido por salões em crescimento.", features: ["Até 8 profissionais", "Tudo do Starter", "AI Growth Engine", "Pacotes e sessões", "WhatsApp ilimitado", "Suporte prioritário"], destaque: true },
-  { nome: "Premium", preco: "R$ 697", desc: "Para redes e operações high-end.", features: ["Profissionais ilimitados", "White-label", "Multi-unidade", "API e integrações", "Onboarding dedicado", "Gerente de sucesso"] },
-];
-
 const faqs = [
-  { q: "Preciso instalar alguma coisa?", a: "Não. O BeautyFlow roda 100% no navegador, no celular e no computador. Basta criar a conta e começar a usar." },
-  { q: "E se eu já tiver dados em outro sistema?", a: "Importamos sua base de clientes e serviços por planilha. Nosso time faz a migração com você no plano Pro e Premium." },
-  { q: "A IA realmente funciona?", a: "Sim. A IA analisa o histórico real do seu salão e gera sugestões concretas — quem reativar, qual horário promover, qual pacote oferecer." },
-  { q: "Posso cancelar quando quiser?", a: "Sim, sem multa e sem fidelidade. O teste é de 14 dias e nem pedimos cartão de crédito." },
-  { q: "Funciona para barbearia e estética?", a: "Funciona para qualquer salão de beleza, estética, barbearia, nail bar ou clínica de bem-estar." },
-  { q: "Como funciona o link de agendamento público?", a: "Cada salão recebe um link único (ex: beautyflow.app/agendar/seu-salao). Você compartilha no Instagram, WhatsApp e o cliente reserva sozinho." },
+  { q: "O GlowFlow é para o meu negócio?", a: "O GlowFlow foi pensado para profissionais de estética e saúde: salões, clínicas de estética, massoterapeutas e especialistas em tratamentos faciais." },
+  { q: "Como funciona o teste gratuito?", a: "Crie sua conta e configure seu negócio para começar o período gratuito de 14 dias. Não é necessário cartão para iniciar o teste." },
+  { q: "Preciso instalar algum programa?", a: "Não. Você acessa o GlowFlow pelo navegador, no computador ou no celular." },
+  { q: "Como meus clientes agendam?", a: "Compartilhe seu link público no WhatsApp ou na bio do Instagram. Seus clientes escolhem o serviço, o profissional e um horário disponível." },
+  { q: "Posso cancelar minha assinatura?", a: "Sim. Você pode gerenciar e cancelar sua assinatura na seção de cobrança da sua conta." },
 ];
 
 function Landing() {
   const { user, loading } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
   if (!loading && user) return <Navigate to="/app/dashboard" />;
-
-  return (
-    <div className="min-h-screen bg-white text-zinc-900">
-      {/* NAVBAR */}
-      <header className="sticky top-0 z-40 border-b border-zinc-200/70 bg-white/85 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
-          <Link to="/" className="flex items-center gap-2">
-            <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${GRADIENT} text-white shadow-lg shadow-rose-500/30`}>
-              <Sparkles className="h-5 w-5" />
-            </div>
-            <span className="text-lg font-bold tracking-tight">BeautyFlow <span className={GRADIENT_TEXT}>AI</span></span>
-          </Link>
-          <nav className="hidden items-center gap-7 text-sm font-medium text-zinc-600 md:flex">
-            <a href="#modulos" className="hover:text-zinc-900">Módulos</a>
-            <a href="#como" className="hover:text-zinc-900">Como funciona</a>
-            <a href="#planos" className="hover:text-zinc-900">Planos</a>
-            <Link to="/demo/dashboard" className="hover:text-zinc-900">Demo</Link>
-          </nav>
-          <div className="flex items-center gap-2">
-            <Link to="/entrar"><Button variant="ghost" size="sm">Entrar</Button></Link>
-            <Link to="/entrar"><Button size="sm" className={`${GRADIENT} text-white hover:opacity-90`}>Começar grátis</Button></Link>
-          </div>
+  return <div className="glow-landing bg-background text-foreground">
+    <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
+      <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 sm:px-8 lg:grid-cols-[1fr_auto_1fr]">
+        <Link to="/" aria-label="GlowFlow — início" className="min-w-0 justify-self-start"><GlowFlowLogo /></Link>
+        <nav aria-label="Navegação principal" className="hidden items-center gap-8 text-sm lg:flex">
+          <a href="#beneficios" className="transition hover:text-primary">Benefícios</a>
+          <a href="#para-voce" className="transition hover:text-primary">Para quem é</a>
+          <a href="#planos" className="transition hover:text-primary">Planos</a>
+        </nav>
+        <div className="flex shrink-0 items-center justify-end gap-2">
+          <Link to="/entrar"><Button variant="ghost" size="sm">Entrar</Button></Link>
+          <Link to="/entrar" search={{ tab: "signup" }} className="hidden sm:block"><Button>Começar grátis <ArrowUpRight className="ml-2 h-4 w-4" /></Button></Link>
+          <Button variant="ghost" size="icon" className="lg:hidden" aria-label={menuOpen ? "Fechar menu" : "Abrir menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</Button>
         </div>
-      </header>
+      </div>
+      {menuOpen && <nav aria-label="Menu móvel" className="grid gap-1 border-t px-4 py-4 lg:hidden">
+        {[{ href: "#beneficios", label: "Benefícios" }, { href: "#para-voce", label: "Para quem é" }, { href: "#planos", label: "Planos" }].map((item) => <a key={item.href} href={item.href} className="py-3 text-sm" onClick={() => setMenuOpen(false)}>{item.label}</a>)}
+        <Link to="/entrar" search={{ tab: "signup" }}><Button className="mt-2 w-full">Começar grátis</Button></Link>
+      </nav>}
+    </header>
 
-      {/* HERO */}
-      <section className="relative overflow-hidden px-6 py-24 text-center md:py-32">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(244,63,94,0.12),transparent_60%)]" />
-        <div className="mx-auto max-w-5xl">
-          <Badge className={`mb-6 ${GRADIENT} px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white shadow-lg shadow-rose-500/30 hover:opacity-90`}>
-            <Sparkles className="mr-1.5 h-3 w-3" /> Inteligência artificial para salões premium
-          </Badge>
-          <h1 className="text-5xl font-black tracking-tight md:text-7xl">
-            Seu salão rodando em <br className="hidden md:block" />
-            <span className={GRADIENT_TEXT}>piloto automático</span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-xl text-zinc-600">
-            Agenda inteligente, CRM premium, pacotes, IA de crescimento — tudo em um sistema que entende o seu negócio.
-          </p>
-          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link to="/entrar">
-              <Button size="lg" className={`h-14 px-8 text-base font-semibold ${GRADIENT} text-white shadow-xl shadow-rose-500/30 hover:opacity-90`}>
-                Começar grátis <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-            <Link to="/demo/dashboard">
-              <Button size="lg" variant="outline" className="h-14 border-zinc-300 px-8 text-base font-semibold">
-                <Play className="mr-2 h-4 w-4" /> Ver demonstração
-              </Button>
-            </Link>
+    <section className="glow-hero relative isolate overflow-hidden bg-graphite text-on-graphite">
+      <img src={clinic} alt="Profissional de estética realizando um tratamento facial em uma clínica" width={1600} height={1024} fetchPriority="high" className="absolute inset-0 -z-20 h-full w-full object-cover object-right" />
+      <div className="glow-hero-shade absolute inset-0 -z-10" />
+      <div className="mx-auto flex min-h-[620px] max-w-7xl items-center px-5 py-16 sm:px-8 lg:min-h-[660px] lg:py-20">
+        <div className="glow-enter max-w-xl">
+          <p className="mb-6 flex items-center gap-2 text-xs font-medium uppercase tracking-normal text-nude"><span className="h-px w-8 bg-nude" /> Profissionais de Estética e Saúde</p>
+          <p className="mb-4 font-display text-3xl italic text-nude">GlowFlow</p>
+          <h1 className="font-display text-4xl font-medium leading-[1.12] sm:text-5xl lg:text-6xl">A gestão inteligente para quem transforma beleza e bem-estar.</h1>
+          <p className="mt-6 max-w-lg text-base leading-relaxed text-on-graphite/85 sm:text-lg">Do salão à clínica de estética: automatize sua agenda, receba pagamentos e encante seus clientes com o GlowFlow.</p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Link to="/entrar" search={{ tab: "signup" }}><Button size="lg" className="h-12 w-full bg-nude text-graphite hover:bg-nude/90 sm:w-auto">Começar meu teste grátis <ArrowUpRight className="ml-3 h-4 w-4" /></Button></Link>
+            <Link to="/demo/dashboard"><Button size="lg" variant="outline" className="h-12 w-full border-on-graphite/40 bg-transparent text-on-graphite hover:bg-on-graphite/10 hover:text-on-graphite sm:w-auto">Conhecer o GlowFlow</Button></Link>
           </div>
-          <p className="mt-5 text-sm text-zinc-500">Sem cartão de crédito · 14 dias grátis · Setup em 5 minutos</p>
+          <p className="mt-5 flex items-center gap-2 text-xs text-on-graphite/75"><Check className="h-4 w-4 text-nude" /> 14 dias grátis · Sem cartão de crédito</p>
         </div>
-      </section>
+      </div>
+    </section>
 
-      {/* STATS */}
-      <section className={`${GRADIENT} px-6 py-14 text-white`}>
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 md:grid-cols-4">
-          {[
-            { v: "+3.500", l: "Salões ativos" },
-            { v: "2M+", l: "Agendamentos/ano" },
-            { v: "94%", l: "Taxa de retenção" },
-            { v: "4.9★", l: "Avaliação média" },
-          ].map((s) => (
-            <div key={s.l} className="text-center">
-              <div className="text-4xl font-black md:text-5xl">{s.v}</div>
-              <div className="mt-1 text-sm font-medium text-white/90">{s.l}</div>
-            </div>
-          ))}
-        </div>
-      </section>
+    <section className="border-b bg-nude/25 px-5 py-7 sm:px-8">
+      <div className="mx-auto grid max-w-7xl gap-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+        <p className="font-display text-2xl">Você cuida das pessoas. <span className="italic text-muted-foreground">A gente cuida da gestão.</span></p>
+        <span className="flex items-center gap-2 text-sm text-muted-foreground"><Leaf className="h-4 w-4" /> Mais leveza para a sua rotina</span>
+      </div>
+    </section>
 
-      {/* MODULOS */}
-      <section id="modulos" className="bg-zinc-50 px-6 py-24">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-14 text-center">
-            <Badge variant="outline" className="mb-3">Plataforma completa</Badge>
-            <h2 className="text-4xl font-black tracking-tight md:text-5xl">6 módulos. Um sistema. <span className={GRADIENT_TEXT}>Zero fricção.</span></h2>
-            <p className="mt-4 text-lg text-zinc-600">Tudo integrado. Adeus às 5 ferramentas diferentes.</p>
-          </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {modulos.map((m) => (
-              <Card key={m.title} className="group border-zinc-200/80 bg-white transition hover:-translate-y-1 hover:shadow-2xl hover:shadow-rose-500/10">
-                <CardContent className="p-7">
-                  <div className={`mb-5 flex h-12 w-12 items-center justify-center rounded-xl ${GRADIENT} text-white shadow-lg shadow-rose-500/25`}>
-                    <m.icon className="h-6 w-6" />
-                  </div>
-                  <Badge variant="secondary" className="mb-3 text-[10px] font-bold uppercase tracking-wider">{m.tag}</Badge>
-                  <h3 className="text-lg font-bold">{m.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-zinc-600">{m.desc}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+    <section id="beneficios" className="scroll-mt-24 px-5 py-16 sm:px-8 lg:py-24">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-12 grid gap-5 md:grid-cols-2 md:items-end">
+          <div><p className="mb-3 text-xs uppercase text-muted-foreground">O cuidado começa na organização</p><h2 className="max-w-lg font-display text-4xl leading-tight sm:text-5xl">Menos tarefas.<br /><span className="italic">Mais tempo para cuidar.</span></h2></div>
+          <p className="max-w-md text-base leading-relaxed text-muted-foreground md:justify-self-end">Uma rotina organizada abre espaço para o que realmente importa: a experiência de cada cliente e o crescimento do seu negócio.</p>
         </div>
-      </section>
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {benefits.map((item, i) => <div key={item.name} className="border-t pt-6">
+            <div className="mb-6 flex items-center justify-between"><item.icon className="h-7 w-7 text-primary" /><span className="font-display text-sm text-muted-foreground">0{i + 1}</span></div>
+            <h3 className="text-lg font-semibold">{item.name}</h3><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.text}</p>
+          </div>)}
+        </div>
+      </div>
+    </section>
 
-      {/* PAIN POINTS */}
-      <section className="px-6 py-24">
-        <div className="mx-auto max-w-5xl">
-          <div className="mb-12 text-center">
-            <Badge variant="outline" className="mb-3 border-rose-300 text-rose-600">Pra quem é</Badge>
-            <h2 className="text-4xl font-black tracking-tight md:text-5xl">Reconhece alguma dessas dores?</h2>
-            <p className="mt-4 text-lg text-zinc-600">Se sim, o BeautyFlow foi feito para você.</p>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            {dores.map((d) => (
-              <div key={d} className="flex items-start gap-4 rounded-2xl border border-rose-100 bg-rose-50/50 p-6">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-rose-500/10">
-                  <AlertCircle className="h-5 w-5 text-rose-600" />
-                </div>
-                <p className="text-sm font-medium leading-relaxed text-zinc-700">{d}</p>
-              </div>
-            ))}
-          </div>
+    <section id="para-voce" className="scroll-mt-24 border-y bg-surface px-5 py-16 sm:px-8 lg:py-20">
+      <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-2">
+        <div><p className="mb-3 text-xs uppercase text-muted-foreground">Feito para o seu universo</p><h2 className="font-display text-4xl leading-tight sm:text-5xl">Cada cuidado é único.<br /><span className="italic">Seu negócio também.</span></h2><p className="mt-5 max-w-lg leading-relaxed text-muted-foreground">Do primeiro agendamento ao próximo tratamento, o GlowFlow acompanha a sua forma de atender.</p><Link to="/entrar" search={{ tab: "signup" }}><Button variant="link" className="mt-5 h-auto p-0 text-foreground">Encontrar meu novo fluxo <ArrowRight className="ml-3 h-4 w-4" /></Button></Link></div>
+        <div className="grid grid-cols-1 gap-x-8 sm:grid-cols-2">
+          {[{ name: "Salões", text: "Beleza e organização em sintonia." }, { name: "Clínicas de Estética", text: "Uma jornada completa para cada cliente." }, { name: "Massoterapeutas", text: "Mais equilíbrio entre sessões e rotina." }, { name: "Tratamentos Faciais", text: "Cuidado contínuo, do histórico à agenda." }].map((item) => <div key={item.name} className="border-t py-6"><h3 className="font-display text-2xl">{item.name}</h3><p className="mt-2 text-sm text-muted-foreground">{item.text}</p></div>)}
         </div>
-      </section>
+      </div>
+    </section>
 
-      {/* HOW IT WORKS */}
-      <section id="como" className="bg-zinc-50 px-6 py-24">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-14 text-center">
-            <Badge variant="outline" className="mb-3">Como funciona</Badge>
-            <h2 className="text-4xl font-black tracking-tight md:text-5xl">Do zero ao operando em <span className={GRADIENT_TEXT}>menos de 1 hora</span></h2>
-          </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {steps.map((s) => (
-              <div key={s.n} className="rounded-2xl border border-zinc-200 bg-white p-7">
-                <div className={`text-5xl font-black ${GRADIENT_TEXT}`}>{s.n}</div>
-                <h3 className="mt-4 text-lg font-bold">{s.t}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-600">{s.d}</p>
-              </div>
-            ))}
-          </div>
+    <section id="planos" className="scroll-mt-24 px-5 py-16 sm:px-8 lg:py-24">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-12 text-center"><p className="mb-3 text-xs uppercase text-muted-foreground">Um plano para cada momento</p><h2 className="font-display text-4xl sm:text-5xl">Seu próximo passo <span className="italic">começa aqui.</span></h2><p className="mt-5 text-muted-foreground">14 dias para conhecer uma rotina mais leve. Sem cartão.</p></div>
+        <div className="grid gap-5 md:grid-cols-3">
+          {plans.map((plan) => { const value = billingPlans[plan.key]; const highlight = plan.key === "pro";
+            return <article key={plan.key} className={`relative flex min-w-0 flex-col rounded-lg border p-6 sm:p-8 ${highlight ? "border-graphite bg-graphite text-on-graphite" : "border-border bg-card text-card-foreground"}`}>
+              <div className="mb-6 flex min-h-6 items-center justify-between gap-2"><span className={`text-xs uppercase ${highlight ? "text-nude" : "text-muted-foreground"}`}>{highlight ? "Para ir além" : plan.key === "starter" ? "Para começar" : "Para expandir"}</span>{highlight && <span className="text-xs text-nude">Nossa escolha <Leaf className="ml-1 inline h-3 w-3" /></span>}</div>
+              <h3 className="font-display text-3xl">{value.name}</h3>
+              <div className="mt-5 flex items-baseline gap-1"><span className="text-lg">R$</span><span className="font-display text-6xl">{value.amount}</span><span className={`ml-1 text-sm ${highlight ? "text-on-graphite/70" : "text-muted-foreground"}`}>/mês</span></div>
+              <p className={`mt-4 min-h-12 text-sm leading-relaxed ${highlight ? "text-on-graphite/75" : "text-muted-foreground"}`}>{plan.description}</p>
+              <div className={`my-6 border-t ${highlight ? "border-on-graphite/20" : "border-border"}`} />
+              <ul className="mb-8 flex-1 space-y-4">{plan.features.map((feature) => <li key={feature} className="flex items-start gap-3 text-sm leading-relaxed"><Check className={`mt-0.5 h-4 w-4 shrink-0 ${highlight ? "text-nude" : "text-primary"}`} /><span className="min-w-0 break-words">{feature}</span></li>)}</ul>
+              <Link to="/entrar" search={{ tab: "signup" }}><Button className={`h-12 w-full ${highlight ? "bg-nude text-graphite hover:bg-nude/90" : ""}`} variant={highlight ? "default" : "outline"}>Testar {value.name} grátis <ArrowUpRight className="ml-2 h-4 w-4" /></Button></Link>
+            </article>;
+          })}
         </div>
-      </section>
+        <p className="mt-6 text-center text-xs text-muted-foreground">Mensalidades em reais. Gerencie sua assinatura diretamente na sua conta.</p>
+      </div>
+    </section>
 
-      {/* AI GROWTH SECTION */}
-      <section className="bg-zinc-900 px-6 py-24 text-white">
-        <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
-          <div>
-            <Badge className={`${GRADIENT} mb-4 text-white`}><Brain className="mr-1.5 h-3 w-3" /> AI Growth Engine</Badge>
-            <h2 className="text-4xl font-black tracking-tight md:text-5xl">IA que cresce o seu salão <span className={GRADIENT_TEXT}>no automático</span></h2>
-            <p className="mt-4 text-lg text-zinc-400">Não é só um chatbot. É um motor que analisa seu histórico, identifica oportunidades reais e entrega ações prontas.</p>
-            <ul className="mt-8 space-y-3">
-              {aiBenefits.map((b) => (
-                <li key={b} className="flex items-start gap-3">
-                  <div className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${GRADIENT}`}>
-                    <CheckCircle2 className="h-3.5 w-3.5 text-white" />
-                  </div>
-                  <span className="font-medium text-zinc-200">{b}</span>
-                </li>
-              ))}
-            </ul>
-            <Link to="/demo/dashboard"><Button size="lg" className={`mt-8 ${GRADIENT} h-12 px-7 text-white hover:opacity-90`}>Ver IA em ação <ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
-          </div>
-          <div className="space-y-4">
-            {insights.map((i) => (
-              <div key={i.title} className="rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-800/60 to-zinc-900 p-6 shadow-2xl">
-                <div className="flex items-center justify-between">
-                  <Badge variant="outline" className={`${i.color} font-bold`}>{i.tag}</Badge>
-                  <Zap className="h-4 w-4 text-zinc-500" />
-                </div>
-                <h4 className="mt-3 font-bold text-white">{i.title}</h4>
-                <p className="mt-1.5 text-sm text-zinc-400">{i.desc}</p>
-                <div className="mt-4 flex gap-2">
-                  <Button size="sm" className={`${GRADIENT} h-8 text-xs text-white hover:opacity-90`}><MessageCircle className="mr-1 h-3 w-3" /> Gerar mensagem</Button>
-                  <Button size="sm" variant="ghost" className="h-8 text-xs text-zinc-300 hover:bg-zinc-800 hover:text-white">Detalhes</Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+    <section className="border-t bg-surface px-5 py-16 sm:px-8 lg:py-20">
+      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_1.4fr]"><div><p className="mb-3 text-xs uppercase text-muted-foreground">Vamos conversar?</p><h2 className="font-display text-4xl">Tudo claro,<br /><span className="italic">desde o início.</span></h2></div><Accordion type="single" collapsible>{faqs.map((faq, i) => <AccordionItem key={faq.q} value={`faq-${i}`}><AccordionTrigger className="text-left text-base hover:no-underline">{faq.q}</AccordionTrigger><AccordionContent className="leading-relaxed text-muted-foreground">{faq.a}</AccordionContent></AccordionItem>)}</Accordion></div>
+    </section>
 
-      {/* TESTIMONIALS */}
-      <section className="px-6 py-24">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-12 text-center">
-            <Badge variant="outline" className="mb-3">Cases reais</Badge>
-            <h2 className="text-4xl font-black tracking-tight md:text-5xl">Quem usa, recomenda</h2>
-          </div>
-          <div className="grid gap-6 md:grid-cols-3">
-            {testimonials.map((t) => (
-              <Card key={t.nome} className="border-zinc-200 bg-white">
-                <CardContent className="p-7">
-                  <div className="mb-3 flex gap-0.5">
-                    {[1,2,3,4,5].map((s) => <Star key={s} className="h-4 w-4 fill-amber-400 text-amber-400" />)}
-                  </div>
-                  <p className="text-sm leading-relaxed text-zinc-700">"{t.txt}"</p>
-                  <div className="mt-5 flex items-center gap-3 border-t pt-4">
-                    <div className={`flex h-10 w-10 items-center justify-center rounded-full ${GRADIENT} font-bold text-white`}>{t.nome[0]}</div>
-                    <div>
-                      <div className="text-sm font-bold">{t.nome}</div>
-                      <div className="text-xs text-zinc-500">{t.salao}</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* PRICING */}
-      <section id="planos" className="bg-zinc-50 px-6 py-24">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-14 text-center">
-            <Badge variant="outline" className="mb-3">Planos</Badge>
-            <h2 className="text-4xl font-black tracking-tight md:text-5xl">Para cada <span className={GRADIENT_TEXT}>tamanho de salão</span></h2>
-            <p className="mt-4 text-lg text-zinc-600">14 dias grátis em qualquer plano. Sem cartão.</p>
-          </div>
-          <div className="grid gap-6 md:grid-cols-3">
-            {planos.map((p) => (
-              <Card key={p.nome} className={p.destaque ? "relative scale-105 border-0 bg-zinc-900 text-white shadow-2xl shadow-rose-500/20" : "border-zinc-200 bg-white"}>
-                {p.destaque && (
-                  <Badge className={`absolute -top-3 left-1/2 -translate-x-1/2 ${GRADIENT} text-white shadow-lg`}>
-                    <Crown className="mr-1 h-3 w-3" /> Mais escolhido
-                  </Badge>
-                )}
-                <CardContent className="p-8">
-                  <h3 className="text-xl font-bold">{p.nome}</h3>
-                  <div className="mt-3">
-                    <span className="text-5xl font-black">{p.preco}</span>
-                    <span className={p.destaque ? "text-zinc-400" : "text-zinc-500"}>/mês</span>
-                  </div>
-                  <p className={`mt-3 text-sm ${p.destaque ? "text-zinc-400" : "text-zinc-600"}`}>{p.desc}</p>
-                  <ul className="mt-7 space-y-3">
-                    {p.features.map((f) => (
-                      <li key={f} className="flex items-start gap-2 text-sm">
-                        <CheckCircle2 className={`mt-0.5 h-4 w-4 shrink-0 ${p.destaque ? "text-rose-400" : "text-rose-500"}`} />
-                        <span>{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Link to="/entrar" className="mt-7 block">
-                    <Button className={p.destaque ? `w-full ${GRADIENT} text-white hover:opacity-90` : "w-full"} variant={p.destaque ? "default" : "outline"}>Começar grátis</Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="px-6 py-24">
-        <div className="mx-auto max-w-3xl">
-          <div className="mb-10 text-center">
-            <Badge variant="outline" className="mb-3">Dúvidas</Badge>
-            <h2 className="text-4xl font-black tracking-tight md:text-5xl">Perguntas frequentes</h2>
-          </div>
-          <Accordion type="single" collapsible className="space-y-3">
-            {faqs.map((f, i) => (
-              <AccordionItem key={f.q} value={`q${i}`} className="rounded-xl border border-zinc-200 bg-white px-5">
-                <AccordionTrigger className="text-left font-semibold hover:no-underline">{f.q}</AccordionTrigger>
-                <AccordionContent className="text-zinc-600">{f.a}</AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-      </section>
-
-      {/* FINAL CTA */}
-      <section className={`${GRADIENT} px-6 py-24 text-center text-white`}>
-        <div className="mx-auto max-w-3xl">
-          <TrendingUp className="mx-auto mb-5 h-12 w-12" />
-          <h2 className="text-4xl font-black tracking-tight md:text-5xl">Pronto para crescer no automático?</h2>
-          <p className="mt-4 text-lg text-white/90">Junte-se a +3.500 salões que já transformaram a gestão com BeautyFlow AI.</p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link to="/entrar">
-              <Button size="lg" className="h-14 bg-white px-8 text-base font-bold text-rose-600 hover:bg-zinc-100">
-                Começar grátis agora <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-            <Link to="/demo/dashboard">
-              <Button size="lg" variant="outline" className="h-14 border-white/40 bg-transparent px-8 text-base font-semibold text-white hover:bg-white/10 hover:text-white">
-                <Play className="mr-2 h-4 w-4" /> Ver demonstração
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="bg-zinc-900 px-6 py-12 text-zinc-400">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 md:flex-row">
-          <div className="flex items-center gap-2">
-            <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${GRADIENT}`}><Sparkles className="h-4 w-4 text-white" /></div>
-            <span className="font-bold text-white">BeautyFlow AI</span>
-          </div>
-          <p className="text-sm">© {new Date().getFullYear()} BeautyFlow AI — Sistema premium para salões de beleza</p>
-        </div>
-      </footer>
-    </div>
-  );
+    <section className="bg-graphite px-5 py-16 text-on-graphite sm:px-8 lg:py-20"><div className="mx-auto max-w-3xl text-center"><Leaf className="mx-auto mb-5 h-8 w-8 text-nude" /><h2 className="font-display text-4xl sm:text-5xl">Seu talento transforma vidas.<br /><span className="italic text-nude">Sua gestão pode acompanhar.</span></h2><p className="mt-5 text-on-graphite/75">Descubra um novo fluxo para o seu negócio com o GlowFlow.</p><Link to="/entrar" search={{ tab: "signup" }}><Button size="lg" className="mt-8 h-12 bg-nude text-graphite hover:bg-nude/90">Começar meus 14 dias grátis <ArrowUpRight className="ml-3 h-4 w-4" /></Button></Link><p className="mt-4 text-xs text-on-graphite/70"><CheckCircle2 className="mr-1 inline h-3 w-3" /> Sem cartão de crédito</p></div></section>
+    <footer className="border-t px-5 py-8 sm:px-8"><div className="mx-auto grid max-w-7xl gap-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"><GlowFlowLogo /><p className="text-xs leading-relaxed text-muted-foreground">© {new Date().getFullYear()} GlowFlow<br />Gestão para quem cuida da beleza e do bem-estar.</p></div></footer>
+  </div>;
 }
