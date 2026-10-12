@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -16,6 +16,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { QRCodeCanvas } from "qrcode.react";
+import { Copy, Check, MessageCircle, QrCode, Instagram, Download } from "lucide-react";
 
 export const Route = createFileRoute("/app/configuracoes")({ component: Configuracoes });
 
@@ -48,6 +50,7 @@ function Configuracoes() {
         <TabsList>
           <TabsTrigger value="salao">Salão</TabsTrigger>
           <TabsTrigger value="aparencia">Aparência</TabsTrigger>
+          <TabsTrigger value="divulgacao">Divulgação</TabsTrigger>
           <TabsTrigger value="cobranca">Cobrança</TabsTrigger>
           <TabsTrigger value="perfil">Perfil</TabsTrigger>
         </TabsList>
@@ -64,6 +67,10 @@ function Configuracoes() {
             <CardHeader><CardTitle>Aparência</CardTitle><CardDescription>Personalize cores e logo</CardDescription></CardHeader>
             <CardContent>{salao && <AparenciaForm salao={salao} onSaved={() => qc.invalidateQueries({ queryKey: ["salao"] })} />}</CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="divulgacao">
+          {salao && <DivulgacaoTab salao={salao} />}
         </TabsContent>
 
         <TabsContent value="cobranca">
@@ -163,6 +170,120 @@ function CobrancaTab({ salao, onSaved }: any) {
           <Button variant="ghost" onClick={estender}>Estender trial +14d</Button>
         </CardContent>
       </Card>
+    </div>
+  );
+}
+
+function DivulgacaoTab({ salao }: any) {
+  const [origin, setOrigin] = useState("");
+  const [copied, setCopied] = useState<string | null>(null);
+  useEffect(() => setOrigin(window.location.origin), []);
+
+  const slug: string | null = salao.slug || null;
+  const nome = salao.nome_fantasia || salao.nome_salao;
+  const url = slug ? `${origin}/agendar/${slug}` : "";
+
+  const instaText = `✨ Agende seu horário na ${nome}!\n\nEscolha o serviço, o profissional e o horário pelo link — rápido e sem espera:\n👉 ${url}\n${salao.endereco ? `\n📍 ${salao.endereco}\n` : ""}\nTe esperamos! 💇‍♀️💅`;
+  const waText = `Olá! Agende seu horário na ${nome} pelo link: ${url}`;
+
+  async function copy(text: string, key: string) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+    }
+    setCopied(key);
+    toast.success("Copiado!");
+    setTimeout(() => setCopied(null), 2000);
+  }
+
+  function downloadQr() {
+    const canvas = document.getElementById("bf-qr-canvas") as HTMLCanvasElement | null;
+    if (!canvas || !slug) return;
+    const a = document.createElement("a");
+    a.href = canvas.toDataURL("image/png");
+    a.download = `qr-agendar-${slug}.png`;
+    a.click();
+    toast.success("QR Code baixado");
+  }
+
+  if (!slug) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Link de agendamento</CardTitle>
+          <CardDescription>Defina o slug público para ativar sua página de divulgação.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">
+            Vá na aba <b>Salão</b> e preencha o campo <b>Slug público</b> (ex.: <code>meu-salao</code>). Depois volte aqui para copiar seu link.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><Copy className="h-4 w-4 text-primary" /> Seu link de agendamento</CardTitle>
+          <CardDescription>Compartilhe com seus clientes por qualquer canal.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Input readOnly value={url} className="font-mono text-sm" onFocus={(e) => e.currentTarget.select()} />
+            <Button onClick={() => copy(url, "link")} className="shrink-0">
+              {copied === "link" ? <Check className="mr-1 h-4 w-4" /> : <Copy className="mr-1 h-4 w-4" />}
+              {copied === "link" ? "Copiado" : "Copiar"}
+            </Button>
+          </div>
+          <a
+            href={`https://wa.me/?text=${encodeURIComponent(waText)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-emerald-600 px-4 text-sm font-medium text-white transition hover:bg-emerald-700"
+          >
+            <MessageCircle className="h-4 w-4" /> Compartilhar no WhatsApp
+          </a>
+        </CardContent>
+      </Card>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><QrCode className="h-4 w-4 text-primary" /> QR Code</CardTitle>
+            <CardDescription>Imprima e cole na recepção, no espelho ou no vitrine.</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center gap-3">
+            <div className="rounded-lg border bg-white p-3">
+              <QRCodeCanvas id="bf-qr-canvas" value={url} size={160} includeMargin />
+            </div>
+            <Button variant="outline" onClick={downloadQr}>
+              <Download className="mr-1 h-4 w-4" /> Baixar PNG
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Instagram className="h-4 w-4 text-primary" /> Texto para Instagram</CardTitle>
+            <CardDescription>Cole na bio, nos stories ou no feed.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="whitespace-pre-wrap rounded-md border bg-muted/40 p-3 text-sm">{instaText}</div>
+            <Button variant="outline" onClick={() => copy(instaText, "insta")}>
+              {copied === "insta" ? <Check className="mr-1 h-4 w-4" /> : <Copy className="mr-1 h-4 w-4" />}
+              {copied === "insta" ? "Copiado" : "Copiar texto"}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
