@@ -1,3 +1,9 @@
+# GlowFlow branding and landing plans
+
+- [ ] Confirm GlowFlow in all visible app branding and replace the landing logo with an original image.
+- [ ] Update landing prices and personalized Bio Site / sales page benefits.
+- [ ] Verify landing and app on desktop, tablet and mobile without changing integrations.
+
 # Service categories
 
 - [x] Add salon-scoped categories and preserve existing service assignments.
