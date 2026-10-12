@@ -1,8 +1,8 @@
 # GlowFlow branding and landing plans
 
-- [ ] Confirm GlowFlow in all visible app branding and replace the landing logo with an original image.
-- [ ] Update landing prices and personalized Bio Site / sales page benefits.
-- [ ] Verify landing and app on desktop, tablet and mobile without changing integrations.
+- [x] Confirm GlowFlow in all visible app branding and replace the landing logo with an original image.
+- [x] Update landing prices and personalized Bio Site / sales page benefits.
+- [x] Verify landing, demo app and authenticated onboarding on desktop, tablet and mobile without changing integrations; this account has no salon, so populated authenticated workspace checks remain outside this branding verification.
 
 # Service categories
 
