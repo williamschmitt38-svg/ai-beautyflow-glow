@@ -1,10 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 export const getPublicSalao = createServerFn({ method: "GET" })
   .inputValidator((v) => z.object({ slug: z.string().min(1).max(120) }).parse(v))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: salao, error } = await supabaseAdmin
       .from("salao")
       .select("id, nome_salao, nome_fantasia, slug, cor_primaria, logo_url, telefone, whatsapp, endereco")
@@ -14,11 +14,11 @@ export const getPublicSalao = createServerFn({ method: "GET" })
     if (!salao) return null;
 
     const [{ data: servicos }, { data: profissionais }, { data: pacotes }] = await Promise.all([
-      supabaseAdmin.from("servico").select("id, nome, categoria, duracao_minutos, valor").eq("company_id", salao.id).eq("ativo", true).order("nome"),
+      supabaseAdmin.from("servico").select("id, nome, category_id, servico_categoria(nome), duracao_minutos, valor").eq("company_id", salao.id).eq("ativo", true).order("nome"),
       supabaseAdmin.from("profissional").select("id, nome, especialidade, hora_inicio, hora_fim").eq("company_id", salao.id).eq("ativo", true).order("nome"),
       supabaseAdmin.from("pacote").select("id, nome, descricao, total_sessoes, valor, validade_dias").eq("company_id", salao.id).eq("ativo", true).order("valor"),
     ]);
-    return { salao, servicos: servicos ?? [], profissionais: profissionais ?? [], pacotes: pacotes ?? [] };
+    return { salao, servicos: (servicos ?? []).map(({ servico_categoria, ...service }) => ({ ...service, categoria: servico_categoria?.nome ?? null })), profissionais: profissionais ?? [], pacotes: pacotes ?? [] };
   });
 
 export const getAvailableSlots = createServerFn({ method: "GET" })
@@ -29,6 +29,7 @@ export const getAvailableSlots = createServerFn({ method: "GET" })
     data: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   }).parse(v))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: salao } = await supabaseAdmin.from("salao").select("id").eq("slug", data.slug).maybeSingle();
     if (!salao) throw new Error("Salão não encontrado");
     const [{ data: prof }, { data: servico }] = await Promise.all([
@@ -92,6 +93,7 @@ const agendamentoSchema = z.object({
 export const createPublicAgendamento = createServerFn({ method: "POST" })
   .inputValidator((v) => agendamentoSchema.parse(v))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: salao, error: e1 } = await supabaseAdmin.from("salao").select("id").eq("slug", data.slug).maybeSingle();
     if (e1) throw new Error(e1.message);
     if (!salao) throw new Error("Salão não encontrado");
@@ -159,6 +161,7 @@ const comprarSchema = z.object({
 export const comprarPacote = createServerFn({ method: "POST" })
   .inputValidator((v) => comprarSchema.parse(v))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: salao } = await supabaseAdmin.from("salao").select("id").eq("slug", data.slug).maybeSingle();
     if (!salao) throw new Error("Salão não encontrado");
 

@@ -1,3 +1,10 @@
+# Service categories
+
+- [x] Add salon-scoped categories and preserve existing service assignments.
+- [x] Add category management and database-backed service selection.
+- [x] Show only populated category tabs in internal and public catalogs.
+- [x] Verify create, rename, delete and empty-category behavior.
+
 # Salon subscriptions
 
 - [x] Create monthly Stripe products and prices.

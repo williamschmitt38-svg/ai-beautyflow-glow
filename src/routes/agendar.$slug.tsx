@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/agendar/$slug")({
   head: ({ params }) => pageHead(`Agendar online · ${params.slug}`, "Escolha seus serviços e agende pelo BeautyFlow."),
@@ -43,6 +44,7 @@ function AgendarPublic() {
   const createAg = useServerFn(createPublicAgendamento);
 
   const [step, setStep] = useState(1);
+  const [category, setCategory] = useState("all");
   const [servicoId, setServicoId] = useState<string>("");
   const [profId, setProfId] = useState<string>("");
   const [data, setData] = useState<string>(new Date().toISOString().slice(0, 10));
@@ -52,6 +54,8 @@ function AgendarPublic() {
   const { data: salaoData, isLoading } = useQuery({
     queryKey: ["public-salao", slug],
     queryFn: () => fetchSalao({ data: { slug } }),
+    refetchInterval: 30000,
+    refetchOnWindowFocus: true,
   });
 
   const { register, handleSubmit, getValues, formState: { errors, isValid } } = useForm<ClienteForm>({
@@ -105,6 +109,9 @@ function AgendarPublic() {
   const selectedServico = salaoData.servicos.find((s: any) => s.id === servicoId);
   const selectedProf = salaoData.profissionais.find((p: any) => p.id === profId);
   const today = new Date().toISOString().slice(0, 10);
+  const categories = Array.from(new Map(salaoData.servicos.flatMap((s) => s.category_id && s.categoria ? [[s.category_id, { id: s.category_id, nome: s.categoria }] as const] : [])).values()).sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+  const activeCategory = categories.some((c) => c.id === category) ? category : "all";
+  const visibleServices = salaoData.servicos.filter((s) => activeCategory === "all" || s.category_id === activeCategory);
 
   const canNext =
     (step === 1 && !!servicoId) ||
@@ -152,18 +159,24 @@ function AgendarPublic() {
         {step === 1 && (
           <section>
             <h2 className="mb-3 text-lg font-semibold">Escolha o serviço</h2>
+            <Tabs value={activeCategory} onValueChange={setCategory} className="mb-4">
+              <TabsList className="h-auto max-w-full flex-wrap justify-start">
+                {[{ id: "all", nome: "Todos" }, ...categories].map((c) => <TabsTrigger key={c.id} value={c.id} className="max-w-full whitespace-normal break-words">{c.nome}</TabsTrigger>)}
+              </TabsList>
+            </Tabs>
             <div className="grid gap-2 sm:grid-cols-2">
-              {salaoData.servicos.map((s: any) => {
+              {visibleServices.map((s: any) => {
                 const active = servicoId === s.id;
                 return (
-                  <button type="button" key={s.id} onClick={() => setServicoId(s.id)}
-                    className={`rounded-md border p-3 text-left transition ${active ? "border-primary bg-primary/5" : "hover:border-primary/50"}`}>
-                    <div className="flex items-center justify-between"><span className="font-medium">{s.nome}</span>{s.categoria && <Badge variant="secondary" className="text-[10px]">{s.categoria}</Badge>}</div>
+                  <Button variant="outline" type="button" key={s.id} onClick={() => setServicoId(s.id)} aria-pressed={active}
+                    className={`block h-auto whitespace-normal rounded-md border p-3 text-left transition ${active ? "border-primary bg-primary/5" : "hover:border-primary/50"}`}>
+                    <div className="flex items-center justify-between gap-2"><span className="min-w-0 break-words font-medium">{s.nome}</span>{s.categoria && <Badge variant="secondary" className="max-w-[50%] whitespace-normal break-words text-[10px]">{s.categoria}</Badge>}</div>
                     <div className="mt-1 text-xs text-muted-foreground">{s.duracao_minutos} min · R$ {Number(s.valor).toFixed(2)}</div>
-                  </button>
+                  </Button>
                 );
               })}
             </div>
+            {visibleServices.length === 0 && <p className="text-sm text-muted-foreground">Nenhum serviço disponível.</p>}
           </section>
         )}
 
