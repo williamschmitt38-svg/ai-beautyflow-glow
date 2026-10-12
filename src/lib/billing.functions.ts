@@ -42,7 +42,7 @@ export const createSalonPortal = createServerFn({ method: 'POST' })
     if (!key) throw new Error('A Stripe ainda não está configurada.');
     const customer = await billingCustomer(key, salon);
     const config = await stripeRequest(key, 'billing_portal/configurations', {
-      'business_profile[headline]': 'Assinatura BeautyFlow',
+      'business_profile[headline]': 'Assinatura GlowFlow',
       'features[payment_method_update][enabled]': 'true', 'features[invoice_history][enabled]': 'true',
       'features[subscription_cancel][enabled]': 'true', 'features[subscription_cancel][mode]': 'at_period_end',
       'features[subscription_update][enabled]': 'true',
@@ -54,7 +54,7 @@ export const createSalonPortal = createServerFn({ method: 'POST' })
       'features[subscription_update][products][1][prices][0]': billingPlans.pro.priceId,
       'features[subscription_update][products][2][product]': 'prod_VQdWXiMNpYv10U',
       'features[subscription_update][products][2][prices][0]': billingPlans.enterprise.priceId,
-    }, 'beautyflow-portal-v1');
+    }, 'beautyflow-portal-v2');
     const session = await stripeRequest(key, 'billing_portal/sessions', { customer: customer.stripe_customer_id, configuration: config.id, return_url: `${new URL(getRequest().url).origin}/app/configuracoes?tab=cobranca`, locale: 'pt-BR' });
     return { url: session.url as string };
   });

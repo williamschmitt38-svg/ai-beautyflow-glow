@@ -7,14 +7,14 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Building2, Palette, Bell, CreditCard, MessageSquare, Globe } from "lucide-react";
 
-export const Route = createFileRoute("/demo/configuracoes")({ head: () => pageHead("Configurações · Demonstração", "Configurações · Demonstração: gestão de salões de beleza no BeautyFlow."), component: DemoConfig });
+export const Route = createFileRoute("/demo/configuracoes")({ head: () => pageHead("Configurações · Demonstração", "Configurações de um negócio na demonstração GlowFlow."), component: DemoConfig });
 
 function DemoConfig() {
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Configurações</h1>
-        <p className="text-muted-foreground">Personalize o BeautyFlow para o seu salão</p>
+        <p className="text-muted-foreground">Personalize o GlowFlow para o seu negócio</p>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -75,11 +75,11 @@ function DemoConfig() {
         </CardContent></Card>
 
         <Card><CardContent className="p-6">
-          <div className="mb-4 flex items-center gap-2"><CreditCard className="h-4 w-4 text-rose-500" /><h3 className="font-bold">Assinatura BeautyFlow</h3></div>
+          <div className="mb-4 flex items-center gap-2"><CreditCard className="h-4 w-4 text-primary" /><h3 className="font-bold">Assinatura GlowFlow</h3></div>
           <div className="rounded-lg bg-gradient-to-br from-rose-500 to-pink-500 p-4 text-white">
             <div className="text-xs uppercase tracking-wider opacity-80">Plano atual</div>
-            <div className="text-2xl font-black">Profissional</div>
-            <div className="text-sm opacity-90">R$ 97/mês · Renova em 14 dias</div>
+            <div className="text-2xl font-black">Pro</div>
+            <div className="text-sm opacity-90">R$ 79/mês · Renova em 14 dias</div>
           </div>
           <Button variant="outline" className="mt-3 w-full">Gerenciar pagamento</Button>
         </CardContent></Card>
@@ -87,7 +87,7 @@ function DemoConfig() {
         <Card><CardContent className="p-6">
           <div className="mb-4 flex items-center gap-2"><Globe className="h-4 w-4 text-rose-500" /><h3 className="font-bold">Página pública de agendamento</h3></div>
           <p className="text-sm text-muted-foreground">URL pública que você compartilha com clientes:</p>
-          <div className="mt-2 rounded-lg border bg-muted p-3 text-sm font-mono">beautyflow.app/agendar/studio-bela</div>
+          <div className="mt-2 break-all rounded-lg border bg-muted p-3 text-sm font-mono">/agendar/studio-bela</div>
           <Button variant="outline" className="mt-3 w-full">Copiar link</Button>
         </CardContent></Card>
       </div>
