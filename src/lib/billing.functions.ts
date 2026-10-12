@@ -8,7 +8,7 @@ const salonInput = z.object({ salaoId: z.string().uuid() });
 export const checkSalonSubscription = createServerFn({ method: 'POST' })
   .middleware([requireSupabaseAuth]).inputValidator(salonInput)
   .handler(async ({ data, context }) => {
-    const salon = await authorizeBilling(context.supabase, data.salaoId);
+    const salon = await authorizeBilling(context.supabase, data.salaoId, context.userId);
     const key = process.env['STRIPE_SECRET_KEY'];
     if (!key) throw new Error('A Stripe ainda não está configurada.');
     return syncBilling(key, salon);
@@ -16,7 +16,7 @@ export const checkSalonSubscription = createServerFn({ method: 'POST' })
 export const createSalonCheckout = createServerFn({ method: 'POST' })
   .middleware([requireSupabaseAuth]).inputValidator(salonInput.extend({ plan: z.enum(['starter', 'pro', 'enterprise']) }))
   .handler(async ({ data, context }) => {
-    const salon = await authorizeBilling(context.supabase, data.salaoId);
+    const salon = await authorizeBilling(context.supabase, data.salaoId, context.userId);
     const key = process.env['STRIPE_SECRET_KEY'];
     if (!key) throw new Error('A Stripe ainda não está configurada.');
     const current = await syncBilling(key, salon);
@@ -37,7 +37,7 @@ export const createSalonCheckout = createServerFn({ method: 'POST' })
 export const createSalonPortal = createServerFn({ method: 'POST' })
   .middleware([requireSupabaseAuth]).inputValidator(salonInput)
   .handler(async ({ data, context }) => {
-    const salon = await authorizeBilling(context.supabase, data.salaoId);
+    const salon = await authorizeBilling(context.supabase, data.salaoId, context.userId);
     const key = process.env['STRIPE_SECRET_KEY'];
     if (!key) throw new Error('A Stripe ainda não está configurada.');
     const customer = await billingCustomer(key, salon);

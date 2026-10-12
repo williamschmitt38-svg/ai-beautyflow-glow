@@ -1,20 +1,22 @@
 import { useServerFn } from '@tanstack/react-start';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { checkSalonSubscription } from '@/lib/billing.functions';
+import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 
 export function useSalonBilling(salaoId: string | null) {
+  const { user } = useAuth();
   const check = useServerFn(checkSalonSubscription);
   const qc = useQueryClient();
   const permissions = useQuery({
-    queryKey: ['billing-permission', salaoId], enabled: !!salaoId,
+    queryKey: ['billing-permission', salaoId, user?.id], enabled: !!salaoId,
     queryFn: async () => {
-      if (!salaoId) return false;
+      if (!salaoId || !user) return false;
       const [{ data: owner }, { data: master }] = await Promise.all([
-        supabase.rpc('has_salao_role', { _salao_id: salaoId, _roles: ['owner'] }),
+        supabase.from('salao_user').select('id').eq('salao_id', salaoId).eq('user_id', user.id).eq('role', 'owner').eq('ativo', true).limit(1),
         supabase.rpc('is_super_admin'),
       ]);
-      return !!(owner || master);
+      return !!(owner?.length || master);
     },
   });
   const subscription = useQuery({
