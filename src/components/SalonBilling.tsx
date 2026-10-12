@@ -11,6 +11,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
+const planFeatures: Record<string, string[]> = {
+  starter: ['Até 2 profissionais', 'Agenda completa', 'CRM de clientes', 'Link público de agendamento', 'Relatórios básicos'],
+  pro: ['Até 8 profissionais', 'Tudo do Starter', 'Criação de um Bio Site personalizado', 'AI Growth Engine', 'Pacotes e sessões', 'WhatsApp ilimitado', 'Suporte prioritário'],
+  enterprise: ['Profissionais ilimitados', 'Criação de uma Página de Vendas personalizada', 'White-label', 'Multi-unidade', 'API e integrações', 'Onboarding dedicado', 'Gerente de sucesso'],
+};
 const labels: Record<string, string> = { trial: 'Período gratuito', ativo: 'Ativa', active: 'Ativa', trialing: 'Período gratuito', past_due: 'Pagamento pendente', inadimplente: 'Pagamento pendente', unpaid: 'Pagamento pendente', incomplete: 'Pagamento pendente', canceled: 'Cancelada', cancelado: 'Cancelada', incomplete_expired: 'Pagamento não concluído', suspenso: 'Suspensa' };
 export function SalonBilling({ salao }: { salao: Database['public']['Tables']['salao']['Row'] }) {
   const billing = useSalonBilling(salao.id);
@@ -49,6 +54,7 @@ export function SalonBilling({ salao }: { salao: Database['public']['Tables']['s
     <div className="grid gap-4 md:grid-cols-3">{(Object.keys(billingPlans) as BillingPlan[]).map(key => <Card key={key} className={current?.subscribed && plan === key ? 'border-primary' : ''}>
       <CardHeader><CardTitle className="flex items-center justify-between gap-2">{billingPlans[key].name}{current?.subscribed && plan === key && <CheckCircle2 className="h-5 w-5 text-primary" />}</CardTitle></CardHeader>
       <CardContent className="space-y-5"><div><span className="text-3xl font-semibold">R$ {billingPlans[key].amount}</span><span className="text-sm text-muted-foreground">/mês</span></div>
+      <ul className="space-y-2 text-sm">{(planFeatures[key] || []).map(f => <li key={f} className="flex gap-2"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{f}</li>)}</ul>
       <Button className="w-full" variant={key === 'pro' ? 'default' : 'outline'} disabled={!billing.canBill || !!busy || billing.isPending || !!billing.error || !!hasSubscription} onClick={() => void open(key)}>{busy === key ? 'Abrindo…' : current?.subscribed && plan === key ? 'Plano atual' : 'Assinar ' + billingPlans[key].name}</Button></CardContent>
     </Card>)}</div>
     <p className="flex items-center gap-2 text-sm text-muted-foreground"><ShieldCheck className="h-4 w-4 shrink-0" />Pagamento seguro pela Stripe. Cobrança mensal em reais.</p>

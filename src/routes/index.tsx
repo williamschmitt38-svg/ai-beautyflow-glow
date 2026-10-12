@@ -96,11 +96,11 @@ function Landing() {
   return (
     <div className="min-h-screen bg-white text-zinc-900">
       {/* NAVBAR */}
-      <header className="sticky top-0 z-40 border-b border-zinc-200/70 bg-white/85 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-rose-100 bg-gradient-to-r from-rose-50/90 via-white/90 to-pink-50/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-3 gap-y-2 px-4 py-3 sm:px-6">
           <Link to="/" aria-label="GlowFlow — página inicial" className="flex shrink-0 items-center gap-2">
-            <img src={glowflowEmblem} alt="" width={40} height={40} className="h-10 w-10 object-contain" />
-            <span className="text-lg font-bold">GlowFlow</span>
+            <span aria-hidden className={`h-10 w-10 ${GRADIENT}`} style={{ WebkitMaskImage: `url(${glowflowEmblem})`, maskImage: `url(${glowflowEmblem})`, WebkitMaskSize: "contain", maskSize: "contain", WebkitMaskRepeat: "no-repeat", maskRepeat: "no-repeat", WebkitMaskPosition: "center", maskPosition: "center" }} />
+            <span className={`text-lg font-bold ${GRADIENT_TEXT}`}>GlowFlow</span>
           </Link>
           <nav className="hidden items-center gap-7 text-sm font-medium text-zinc-600 lg:flex">
             <a href="#modulos" className="hover:text-zinc-900">Módulos</a>
