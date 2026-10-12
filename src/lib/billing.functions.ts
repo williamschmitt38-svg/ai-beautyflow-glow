@@ -54,7 +54,7 @@ export const createSalonPortal = createServerFn({ method: 'POST' })
       'features[subscription_update][products][1][prices][0]': billingPlans.pro.priceId,
       'features[subscription_update][products][2][product]': 'prod_VQdWXiMNpYv10U',
       'features[subscription_update][products][2][prices][0]': billingPlans.enterprise.priceId,
-    }, 'beautyflow-portal-v2');
+    }, 'beautyflow-portal-v1');
     const session = await stripeRequest(key, 'billing_portal/sessions', { customer: customer.stripe_customer_id, configuration: config.id, return_url: `${new URL(getRequest().url).origin}/app/configuracoes?tab=cobranca`, locale: 'pt-BR' });
     return { url: session.url as string };
   });
