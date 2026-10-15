@@ -6,7 +6,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Lock, Eye } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useSalao } from "@/hooks/useSalao";
 import { PageHeader, FormDialog, NewButton } from "@/components/PageHeader";
@@ -44,6 +46,36 @@ function Clientes() {
       return data;
     },
   });
+
+  const [detail, setDetail] = useState<any>(null);
+  const { data: plano } = useQuery({
+    queryKey: ["salao-plano", salaoId], enabled: !!salaoId,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("salao").select("plano").eq("id", salaoId!).single();
+      if (error) throw error;
+      return data.plano;
+    },
+  });
+  const unlocked = plano === "pro" || plano === "enterprise";
+  const { data: gastos } = useQuery({
+    queryKey: ["cliente-gastos", salaoId], enabled: !!salaoId && unlocked,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("agendamento")
+        .select("cliente_id, valor, servico:servico_id(servico_categoria(nome))")
+        .eq("company_id", salaoId!).in("status", ["confirmado", "concluido"]).not("cliente_id", "is", null);
+      if (error) throw error;
+      const map: Record<string, { total: number; vezes: number; cats: Record<string, number> }> = {};
+      for (const a of data as any[]) {
+        const m = (map[a.cliente_id] ??= { total: 0, vezes: 0, cats: {} });
+        const v = Number(a.valor ?? 0);
+        m.total += v; m.vezes += 1;
+        const cat = a.servico?.servico_categoria?.nome ?? "Sem categoria";
+        m.cats[cat] = (m.cats[cat] ?? 0) + v;
+      }
+      return map;
+    },
+  });
+  const brl = (n: number) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
   const save = useMutation({
     mutationFn: async (v: Form) => {
@@ -90,7 +122,7 @@ function Clientes() {
           <TableHeader>
             <TableRow>
               <TableHead>Nome</TableHead><TableHead>Telefone</TableHead>
-              <TableHead>Email</TableHead><TableHead className="w-32"></TableHead>
+              <TableHead>Email</TableHead><TableHead>LTV</TableHead><TableHead className="w-40"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -99,7 +131,13 @@ function Clientes() {
                 <TableCell className="font-medium">{c.nome}</TableCell>
                 <TableCell>{c.telefone}</TableCell>
                 <TableCell>{c.email}</TableCell>
+                <TableCell className="whitespace-nowrap font-semibold">
+                  {unlocked ? brl(gastos?.[c.id]?.total ?? 0) : <Lock className="h-4 w-4 text-muted-foreground" aria-label="Disponível nos planos Pro e Enterprise" />}
+                </TableCell>
                 <TableCell className="text-right">
+                  <Button size="icon" variant="ghost" aria-label="Ver detalhes" onClick={() => setDetail(c)}>
+                    <Eye className="h-4 w-4" />
+                  </Button>
                   <Button size="icon" variant="ghost" onClick={() => { setEditing(c); setOpen(true); }}>
                     <Pencil className="h-4 w-4" />
                   </Button>
@@ -110,11 +148,53 @@ function Clientes() {
               </TableRow>
             ))}
             {data?.length === 0 && (
-              <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-8">Nenhum cliente cadastrado</TableCell></TableRow>
+              <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Nenhum cliente cadastrado</TableCell></TableRow>
             )}
           </TableBody>
         </Table>
       </Card>
+      <Dialog open={!!detail} onOpenChange={(o) => !o && setDetail(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>{detail?.nome}</DialogTitle></DialogHeader>
+          {detail && (
+            <div className="space-y-2 text-sm text-muted-foreground">
+              {detail.telefone && <p>Telefone: {detail.telefone}</p>}
+              {detail.email && <p>Email: {detail.email}</p>}
+              {detail.observacoes && <p>Observações: {detail.observacoes}</p>}
+            </div>
+          )}
+          <h3 className="mt-2 font-semibold">Histórico de Gastos</h3>
+          {unlocked ? (() => {
+            const g = gastos?.[detail?.id] ?? { total: 0, vezes: 0, cats: {} };
+            const cats = Object.entries(g.cats).sort((a, b) => b[1] - a[1]);
+            return (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <Card className="p-4"><p className="text-xs text-muted-foreground">Total Gasto</p><p className="text-xl font-bold">{brl(g.total)}</p></Card>
+                  <Card className="p-4"><p className="text-xs text-muted-foreground">Frequência</p><p className="text-xl font-bold">{g.vezes} {g.vezes === 1 ? "visita" : "visitas"}</p></Card>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Gasto por Categoria</p>
+                  {cats.length === 0 && <p className="text-sm text-muted-foreground">Nenhum agendamento confirmado ou concluído.</p>}
+                  {cats.map(([nome, v]) => (
+                    <div key={nome} className="space-y-1">
+                      <div className="flex justify-between text-sm"><span>{nome}</span><span className="font-medium">{brl(v)}</span></div>
+                      <div className="h-2 rounded-full bg-muted"><div className="h-2 rounded-full bg-primary" style={{ width: `${g.total ? (v / g.total) * 100 : 0}%` }} /></div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground">Considera apenas agendamentos confirmados ou concluídos.</p>
+              </div>
+            );
+          })() : (
+            <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed p-6 text-center">
+              <Lock className="h-6 w-6 text-muted-foreground" />
+              <p className="text-sm">O Histórico de Gastos e o LTV estão disponíveis nos planos Pro e Enterprise.</p>
+              <Button asChild><Link to="/app/configuracoes" search={{ tab: "cobranca" } as any}>Fazer upgrade</Link></Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
       <FormDialog open={open} onOpenChange={setOpen} title={editing ? "Editar cliente" : "Novo cliente"}>
         <ClienteForm initial={editing} onSubmit={(v) => save.mutate(v)} loading={save.isPending} />
       </FormDialog>

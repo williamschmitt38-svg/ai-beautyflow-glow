@@ -87,7 +87,7 @@ function DemoConfig() {
         <Card><CardContent className="p-6">
           <div className="mb-4 flex items-center gap-2"><Globe className="h-4 w-4 text-rose-500" /><h3 className="font-bold">Página pública de agendamento</h3></div>
           <p className="text-sm text-muted-foreground">URL pública que você compartilha com clientes:</p>
-          <div className="mt-2 rounded-lg border bg-muted p-3 text-sm font-mono">glowflow.app/agendar/studio-bela</div>
+          <div className="mt-2 rounded-lg border bg-muted p-3 text-sm font-mono">glowvitta.app/agendar/studio-bela</div>
           <Button variant="outline" className="mt-3 w-full">Copiar link</Button>
         </CardContent></Card>
       </div>
