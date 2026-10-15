@@ -30,7 +30,7 @@ export const createSalonCheckout = createServerFn({ method: 'POST' })
       'metadata[salao_id]': salon.id, client_reference_id: salon.id,
       success_url: `${origin}/app/configuracoes?tab=cobranca&payment=success`,
       cancel_url: `${origin}/app/configuracoes?tab=cobranca&payment=cancel`,
-      locale: 'pt-BR', 'adaptive_pricing[enabled]': 'false',
+      locale: 'pt-BR', 'adaptive_pricing[enabled]': 'false', allow_promotion_codes: 'true',
     }, `bf-checkout-v2-${salon.id}-${data.plan}-${Math.floor(Date.now() / 1800000)}`);
     return { url: session.url as string };
   });
