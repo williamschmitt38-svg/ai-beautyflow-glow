@@ -42,7 +42,7 @@ export function SalonBilling({ salao }: { salao: Database['public']['Tables']['s
   return <div className="space-y-6 py-4">
     <div className="flex flex-wrap items-start justify-between gap-4 border-b pb-6">
       <div className="space-y-2"><h2 className="flex items-center gap-2 text-xl font-semibold"><CreditCard className="h-5 w-5 text-primary" /> Assinatura GlowVitta</h2>
-        <div className="flex flex-wrap items-center gap-2 text-sm"><span>{billingPlans[plan].name} · R$ {billingPlans[plan].amount}/mês</span><Badge variant={current?.subscribed ? 'default' : 'secondary'}>{labels[state] || state}</Badge></div>
+        <div className="flex flex-wrap items-center gap-2 text-sm"><span>{billingPlans[plan].name} · R$ {billingPlans[plan].amount.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}/mês</span><Badge variant={current?.subscribed ? 'default' : 'secondary'}>{labels[state] || state}</Badge></div>
         {salao.trial_ate && !current?.subscribed && <p className="text-sm text-muted-foreground">Período gratuito até {format(parseISO(salao.trial_ate), 'dd/MM/yyyy')}</p>}
         {current?.periodEnd && <p className="text-sm text-muted-foreground">{current.cancelAtPeriodEnd ? 'Acesso até' : 'Próxima renovação'}: {format(parseISO(current.periodEnd), 'dd/MM/yyyy')}</p>}
       </div>
@@ -53,7 +53,7 @@ export function SalonBilling({ salao }: { salao: Database['public']['Tables']['s
     {!billing.canBill && !billing.permissionLoading && <p className="text-sm text-muted-foreground">A assinatura é gerenciada pelo dono do salão.</p>}
     <div className="grid gap-4 md:grid-cols-3">{(Object.keys(billingPlans) as BillingPlan[]).map(key => <Card key={key} className={current?.subscribed && plan === key ? 'border-primary' : ''}>
       <CardHeader><CardTitle className="flex items-center justify-between gap-2">{billingPlans[key].name}{current?.subscribed && plan === key && <CheckCircle2 className="h-5 w-5 text-primary" />}</CardTitle></CardHeader>
-      <CardContent className="space-y-5"><div><span className="text-3xl font-semibold">R$ {billingPlans[key].amount}</span><span className="text-sm text-muted-foreground">/mês</span></div>
+      <CardContent className="space-y-5"><div><span className="text-3xl font-semibold">R$ {billingPlans[key].amount.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span><span className="text-sm text-muted-foreground">/mês</span></div>
       <ul className="space-y-2 text-sm">{(planFeatures[key] || []).map(f => <li key={f} className="flex gap-2"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{f}</li>)}</ul>
       <Button className="w-full" variant={key === 'pro' ? 'default' : 'outline'} disabled={!billing.canBill || !!busy || billing.isPending || !!billing.error || !!hasSubscription} onClick={() => void open(key)}>{busy === key ? 'Abrindo…' : current?.subscribed && plan === key ? 'Plano atual' : 'Assinar ' + billingPlans[key].name}</Button></CardContent>
     </Card>)}</div>
