@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { demoPacotes } from "@/lib/demo-seed";
 
-export const Route = createFileRoute("/demo/pacotes")({ head: () => pageHead("Pacotes · Demonstração", "Pacotes · Demonstração: gestão de salões de beleza no GlowFlow."), component: DemoPacotes });
+export const Route = createFileRoute("/demo/pacotes")({ head: () => pageHead("Pacotes · Demonstração", "Pacotes · Demonstração: gestão de salões de beleza no GlowVitta."), component: DemoPacotes });
 
 function DemoPacotes() {
   return (

@@ -4,7 +4,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { MasterSidebar } from "@/components/MasterSidebar";
 import { useAuth } from "@/hooks/useAuth";
 
-export const Route = createFileRoute("/master")({ head: () => pageHead("Administração master", "Administração master: gestão de salões de beleza no GlowFlow."), component: MasterLayout });
+export const Route = createFileRoute("/master")({ head: () => pageHead("Administração master", "Administração master: gestão de salões de beleza no GlowVitta."), component: MasterLayout });
 
 function MasterLayout() {
   const { user, loading, isSuperAdmin } = useAuth();

@@ -18,9 +18,9 @@ export const Route = createFileRoute("/")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { title: "GlowFlow — Sistema premium para salões de beleza" },
-      { name: "description", content: "Agenda inteligente, CRM, pacotes, financeiro e IA que cresce seu salão no automático. Teste 14 dias grátis, sem cartão." },
-      { property: "og:title", content: "GlowFlow — Sistema premium para salões de beleza" },
+      { title: "GlowVitta — Gestão para Estética e Saúde" },
+      { name: "description", content: "Agenda inteligente, CRM, pacotes, financeiro e IA que faz seu negócio crescer — salões, clínicas e bem-estar. Teste 14 dias grátis, sem cartão." },
+      { property: "og:title", content: "GlowVitta — Gestão para Estética e Saúde" },
       { property: "og:description", content: "Agenda inteligente, CRM premium, pacotes, IA de crescimento. Tudo num só sistema." },
     ],
   }),
@@ -69,24 +69,24 @@ const insights = [
 ];
 
 const testimonials = [
-  { nome: "Ana Silveira", salao: "Studio Ana Silveira", txt: "Reduzi no-show em 60% e aumentei o ticket médio em 35% no primeiro mês de uso do GlowFlow." },
+  { nome: "Ana Silveira", salao: "Studio Ana Silveira", txt: "Reduzi no-show em 60% e aumentei o ticket médio em 35% no primeiro mês de uso do GlowVitta." },
   { nome: "Marcos Costa", salao: "Espaço Beleza Premium", txt: "A IA de reativação trouxe clientes de volta. Em 3 semanas recuperei R$ 4.200 em serviços." },
   { nome: "Juliana Ramos", salao: "Rede Bella Vita", txt: "Gerenciar 3 unidades ficou simples. Cada salão é um ambiente isolado, mas eu vejo tudo." },
 ];
 
 const planos = [
-  { nome: "Starter", preco: "R$ 39,00", desc: "Para salões começando a se organizar.", features: ["Até 2 profissionais", "Agenda completa", "CRM de clientes", "Link público de agendamento", "Relatórios básicos"] },
-  { nome: "Pro", preco: "R$ 79,00", desc: "O plano mais escolhido por salões em crescimento.", features: ["Até 8 profissionais", "Tudo do Starter", "Criação de um Bio Site personalizado", "AI Growth Engine", "Pacotes e sessões", "WhatsApp ilimitado", "Suporte prioritário"], destaque: true },
-  { nome: "Premium", preco: "R$ 149,00", desc: "Para redes e operações high-end.", features: ["Profissionais ilimitados", "Criação de uma Página de Vendas personalizada", "White-label", "Multi-unidade", "API e integrações", "Onboarding dedicado", "Gerente de sucesso"] },
+  { nome: "Starter", preco: "R$ 39,00", desc: "Para profissionais de estética começando a se organizar.", features: ["Até 2 profissionais", "Agenda completa", "CRM de clientes", "Link público de agendamento", "Relatórios básicos"] },
+  { nome: "Pro", preco: "R$ 79,00", desc: "O plano mais escolhido por salões e clínicas em crescimento.", features: ["Até 8 profissionais", "Tudo do Starter", "Link na Bio Personalizado", "AI Growth Engine", "Pacotes e sessões", "WhatsApp ilimitado", "Suporte prioritário"], destaque: true },
+  { nome: "Enterprise", preco: "R$ 129,90", desc: "Para redes e operações high-end.", features: ["Profissionais ilimitados", "Página de Vendas Exclusiva", "White-label", "Multi-unidade", "API e integrações", "Onboarding dedicado", "Gerente de sucesso"] },
 ];
 
 const faqs = [
-  { q: "Preciso instalar alguma coisa?", a: "Não. O GlowFlow roda 100% no navegador, no celular e no computador. Basta criar a conta e começar a usar." },
-  { q: "E se eu já tiver dados em outro sistema?", a: "Importamos sua base de clientes e serviços por planilha. Nosso time faz a migração com você no plano Pro e Premium." },
+  { q: "Preciso instalar alguma coisa?", a: "Não. O GlowVitta roda 100% no navegador, no celular e no computador. Basta criar a conta e começar a usar." },
+  { q: "E se eu já tiver dados em outro sistema?", a: "Importamos sua base de clientes e serviços por planilha. Nosso time faz a migração com você no plano Pro e Enterprise." },
   { q: "A IA realmente funciona?", a: "Sim. A IA analisa o histórico real do seu salão e gera sugestões concretas — quem reativar, qual horário promover, qual pacote oferecer." },
   { q: "Posso cancelar quando quiser?", a: "Sim, sem multa e sem fidelidade. O teste é de 14 dias e nem pedimos cartão de crédito." },
   { q: "Funciona para barbearia e estética?", a: "Funciona para qualquer salão de beleza, estética, barbearia, nail bar ou clínica de bem-estar." },
-  { q: "Como funciona o link de agendamento público?", a: "Cada salão recebe um link único (ex: glowflow.app/agendar/seu-salao). Você compartilha no Instagram, WhatsApp e o cliente reserva sozinho." },
+  { q: "Como funciona o link de agendamento público?", a: "Cada salão recebe um link único (ex: glowvitta.app/agendar/seu-salao). Você compartilha no Instagram, WhatsApp e o cliente reserva sozinho." },
 ];
 
 function Landing() {
@@ -98,9 +98,9 @@ function Landing() {
       {/* NAVBAR */}
       <header className="sticky top-0 z-40 border-b border-rose-100 bg-gradient-to-r from-rose-50/90 via-white/90 to-pink-50/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-3 gap-y-2 px-4 py-3 sm:px-6">
-          <Link to="/" aria-label="GlowFlow — página inicial" className="flex shrink-0 items-center gap-2">
+          <Link to="/" aria-label="GlowVitta — página inicial" className="flex shrink-0 items-center gap-2">
             <span aria-hidden className={`h-10 w-10 ${GRADIENT}`} style={{ WebkitMaskImage: `url(${glowflowEmblem})`, maskImage: `url(${glowflowEmblem})`, WebkitMaskSize: "contain", maskSize: "contain", WebkitMaskRepeat: "no-repeat", maskRepeat: "no-repeat", WebkitMaskPosition: "center", maskPosition: "center" }} />
-            <span className={`text-lg font-bold ${GRADIENT_TEXT}`}>GlowFlow</span>
+            <span className={`text-lg font-bold ${GRADIENT_TEXT}`}>GlowVitta</span>
           </Link>
           <nav className="hidden items-center gap-7 text-sm font-medium text-zinc-600 lg:flex">
             <a href="#modulos" className="hover:text-zinc-900">Módulos</a>
@@ -120,7 +120,7 @@ function Landing() {
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(244,63,94,0.12),transparent_60%)]" />
         <div className="mx-auto max-w-5xl">
           <Badge className={`mb-6 ${GRADIENT} px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white shadow-lg shadow-rose-500/30 hover:opacity-90`}>
-            <Sparkles className="mr-1.5 h-3 w-3" /> Inteligência artificial para salões premium
+            <Sparkles className="mr-1.5 h-3 w-3" /> Estética e Saúde: salões, clínicas e bem-estar
           </Badge>
           <h1 className="text-5xl font-black tracking-tight md:text-7xl">
             Seu salão rodando em <br className="hidden md:block" />
@@ -193,7 +193,7 @@ function Landing() {
           <div className="mb-12 text-center">
             <Badge variant="outline" className="mb-3 border-rose-300 text-rose-600">Pra quem é</Badge>
             <h2 className="text-4xl font-black tracking-tight md:text-5xl">Reconhece alguma dessas dores?</h2>
-            <p className="mt-4 text-lg text-zinc-600">Se sim, o GlowFlow foi feito para você.</p>
+            <p className="mt-4 text-lg text-zinc-600">Se sim, o GlowVitta foi feito para você.</p>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             {dores.map((d) => (
@@ -358,7 +358,7 @@ function Landing() {
         <div className="mx-auto max-w-3xl">
           <TrendingUp className="mx-auto mb-5 h-12 w-12" />
           <h2 className="text-4xl font-black tracking-tight md:text-5xl">Pronto para crescer no automático?</h2>
-          <p className="mt-4 text-lg text-white/90">Junte-se a +3.500 salões que já transformaram a gestão com GlowFlow.</p>
+          <p className="mt-4 text-lg text-white/90">Junte-se a salões, clínicas e espaços de bem-estar que transformaram a gestão com GlowVitta.</p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link to="/entrar">
               <Button size="lg" className="h-14 bg-white px-8 text-base font-bold text-rose-600 hover:bg-zinc-100">
@@ -379,9 +379,9 @@ function Landing() {
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 md:flex-row">
           <div className="flex items-center gap-2">
             <img src={glowflowEmblem} alt="" loading="lazy" width={36} height={36} className="h-9 w-9 rounded-md bg-landing-surface object-contain p-1" />
-            <span className="font-bold text-white">GlowFlow</span>
+            <span className="font-bold text-white">GlowVitta</span>
           </div>
-          <p className="text-sm">© {new Date().getFullYear()} GlowFlow — Sistema premium para salões de beleza</p>
+          <p className="text-sm">© {new Date().getFullYear()} GlowVitta — Gestão para Estética e Saúde</p>
         </div>
       </footer>
     </div>

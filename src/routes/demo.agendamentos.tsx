@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { demoAgendamentos } from "@/lib/demo-seed";
 
-export const Route = createFileRoute("/demo/agendamentos")({ head: () => pageHead("Agendamentos · Demonstração", "Agendamentos · Demonstração: gestão de salões de beleza no GlowFlow."), component: DemoAgendamentos });
+export const Route = createFileRoute("/demo/agendamentos")({ head: () => pageHead("Agendamentos · Demonstração", "Agendamentos · Demonstração: gestão de salões de beleza no GlowVitta."), component: DemoAgendamentos });
 
 function DemoAgendamentos() {
   const ord = [...demoAgendamentos].sort((a, b) => (b.data + b.hora).localeCompare(a.data + a.hora));

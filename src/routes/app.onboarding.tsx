@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute("/app/onboarding")({ head: () => pageHead("Configurar salão", "Configurar salão: gestão de salões de beleza no GlowFlow."), component: Onboarding });
+export const Route = createFileRoute("/app/onboarding")({ head: () => pageHead("Configurar salão", "Configurar salão: gestão de salões de beleza no GlowVitta."), component: Onboarding });
 
 const salaoSchema = z.object({
   nome_salao: z.string().min(2, "Mínimo 2 caracteres"),
