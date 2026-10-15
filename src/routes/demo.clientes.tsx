@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { demoClientes } from "@/lib/demo-seed";
 
-export const Route = createFileRoute("/demo/clientes")({ head: () => pageHead("Clientes · Demonstração", "Clientes · Demonstração: gestão de salões de beleza no GlowFlow."), component: DemoClientes });
+export const Route = createFileRoute("/demo/clientes")({ head: () => pageHead("Clientes · Demonstração", "Clientes · Demonstração: gestão de salões de beleza no GlowVitta."), component: DemoClientes });
 
 function DemoClientes() {
   return (

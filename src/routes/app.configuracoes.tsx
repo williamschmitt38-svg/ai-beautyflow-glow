@@ -21,7 +21,7 @@ import { Copy, Check, MessageCircle, QrCode, Instagram, Download } from "lucide-
 
 export const Route = createFileRoute("/app/configuracoes")({
   validateSearch: (search: Record<string, unknown>) => ({ tab: typeof search.tab === "string" ? search.tab : "salao", payment: typeof search.payment === "string" ? search.payment : undefined }),
-  head: () => ({ meta: [{ title: "Configurações e assinatura — GlowFlow" }, { name: "description", content: "Gerencie seu salão e sua assinatura GlowFlow." }, { property: "og:title", content: "Configurações e assinatura — GlowFlow" }, { property: "og:description", content: "Gerencie seu salão e sua assinatura GlowFlow." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
+  head: () => ({ meta: [{ title: "Configurações e assinatura — GlowVitta" }, { name: "description", content: "Gerencie seu salão e sua assinatura GlowVitta." }, { property: "og:title", content: "Configurações e assinatura — GlowVitta" }, { property: "og:description", content: "Gerencie seu salão e sua assinatura GlowVitta." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: Configuracoes,
 });
 

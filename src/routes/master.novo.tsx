@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export const Route = createFileRoute("/master/novo")({ head: () => pageHead("Novo salão", "Novo salão: gestão de salões de beleza no GlowFlow."), component: NovoSalao });
+export const Route = createFileRoute("/master/novo")({ head: () => pageHead("Novo salão", "Novo salão: gestão de salões de beleza no GlowVitta."), component: NovoSalao });
 
 const schema = z.object({
   nome_salao: z.string().min(2),
@@ -36,7 +36,7 @@ function NovoSalao() {
       <Card>
         <CardContent className="pt-6">
           <form className="space-y-4" onSubmit={handleSubmit(async (v) => {
-            const valor = v.plano === "starter" ? 39 : v.plano === "pro" ? 79 : 149;
+            const valor = v.plano === "starter" ? 39 : v.plano === "pro" ? 79 : 129.9;
             const { error } = await supabase.from("salao").insert({
               nome_salao: v.nome_salao,
               admin_email: v.admin_email,
@@ -61,7 +61,7 @@ function NovoSalao() {
                   <SelectContent>
                     <SelectItem value="starter">Starter — R$ 39</SelectItem>
                     <SelectItem value="pro">Pro — R$ 79</SelectItem>
-                    <SelectItem value="enterprise">Premium — R$ 149</SelectItem>
+                    <SelectItem value="enterprise">Enterprise — R$ 129,90</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

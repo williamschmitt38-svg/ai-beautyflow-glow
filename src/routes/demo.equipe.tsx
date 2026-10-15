@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, Plus, Shield } from "lucide-react";
 
-export const Route = createFileRoute("/demo/equipe")({ head: () => pageHead("Equipe · Demonstração", "Equipe · Demonstração: gestão de salões de beleza no GlowFlow."), component: DemoEquipe });
+export const Route = createFileRoute("/demo/equipe")({ head: () => pageHead("Equipe · Demonstração", "Equipe · Demonstração: gestão de salões de beleza no GlowVitta."), component: DemoEquipe });
 
 const equipe = [
   { nome: "Camila Ferreira", cargo: "Proprietária", role: "Admin", email: "camila@studiobela.com.br", telefone: "(11) 99999-0001", cor: "#F43F5E", status: "ativo" },

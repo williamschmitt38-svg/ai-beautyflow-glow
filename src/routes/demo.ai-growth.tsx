@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { demoAIInsights, type AIInsight } from "@/lib/demo-seed";
 
-export const Route = createFileRoute("/demo/ai-growth")({ head: () => pageHead("AI Growth · Demonstração", "AI Growth · Demonstração: gestão de salões de beleza no GlowFlow."), component: DemoAIGrowth });
+export const Route = createFileRoute("/demo/ai-growth")({ head: () => pageHead("AI Growth · Demonstração", "AI Growth · Demonstração: gestão de salões de beleza no GlowVitta."), component: DemoAIGrowth });
 
 const severityMap = {
   alta: { label: "ALTA", color: "bg-rose-500/15 text-rose-600 border-rose-500/30" },
