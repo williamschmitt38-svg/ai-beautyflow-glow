@@ -56,6 +56,7 @@ const steps = [
 ];
 
 const aiBenefits = [
+  "Dashboard de Custos vs Retorno: saiba o lucro real do mês (Pro e Enterprise)",
   "Reativa clientes inativos automaticamente",
   "Detecta horários fracos e sugere promoções",
   "Mensagens prontas para WhatsApp em 1 clique",
@@ -76,8 +77,8 @@ const testimonials = [
 
 const planos = [
   { nome: "Starter", preco: "R$ 39,00", desc: "Para profissionais de estética começando a se organizar.", features: ["Até 2 profissionais", "Agenda completa", "CRM de clientes", "Link público de agendamento", "Relatórios básicos"] },
-  { nome: "Pro", preco: "R$ 79,00", desc: "O plano mais escolhido por salões e clínicas em crescimento.", features: ["Até 8 profissionais", "Tudo do Starter", "Link na Bio Personalizado", "AI Growth Engine", "Pacotes e sessões", "WhatsApp ilimitado", "Suporte prioritário"], destaque: true },
-  { nome: "Enterprise", preco: "R$ 129,90", desc: "Para redes e operações high-end.", features: ["Profissionais ilimitados", "Página de Vendas Exclusiva", "White-label", "Multi-unidade", "API e integrações", "Onboarding dedicado", "Gerente de sucesso"] },
+  { nome: "Pro", preco: "R$ 79,00", desc: "O plano mais escolhido por salões e clínicas em crescimento.", features: ["Até 8 profissionais", "Tudo do Starter", "Link na Bio Personalizado", "Dashboard de Custos vs Retorno", "AI Growth Engine", "Pacotes e sessões", "WhatsApp ilimitado", "Suporte prioritário"], destaque: true },
+  { nome: "Enterprise", preco: "R$ 129,90", desc: "Para redes e operações high-end.", features: ["Profissionais ilimitados", "Página de Vendas Exclusiva", "Dashboard de Custos vs Retorno", "White-label", "Multi-unidade", "API e integrações", "Onboarding dedicado", "Gerente de sucesso"] },
 ];
 
 const faqs = [
