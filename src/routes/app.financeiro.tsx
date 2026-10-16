@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { CustoRetorno, CUSTO_CATS } from "@/components/CustoRetorno";
 
 export const Route = createFileRoute("/app/financeiro")({ head: () => pageHead("Financeiro", "Financeiro: gestão de salões de beleza no GlowVitta."), component: Financeiro });
 
@@ -68,6 +69,7 @@ function Financeiro() {
         <Kpi label="Despesas" value={despesas} icon={TrendingDown} color="text-destructive" />
         <Kpi label="Saldo" value={receitas - despesas} icon={Wallet} color="text-primary" />
       </div>
+      {salaoId && <CustoRetorno salaoId={salaoId} mStart={mStart} mEnd={mEnd} despesasList={(lancamentos ?? []).filter((l: any) => l.tipo === "despesa")} />}
       <Card>
         <Table>
           <TableHeader><TableRow><TableHead>Data</TableHead><TableHead>Tipo</TableHead><TableHead>Descrição</TableHead><TableHead>Categoria</TableHead><TableHead className="text-right">Valor</TableHead><TableHead></TableHead></TableRow></TableHeader>
@@ -124,7 +126,12 @@ function LancForm({ onSubmit, loading }: { onSubmit: (v: Form) => void; loading:
         <div className="space-y-2"><Label>Data</Label><Input type="date" {...register("data")} /></div>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-2"><Label>Categoria</Label><Input {...register("categoria")} placeholder="Ex: Aluguel" /></div>
+        <div className="space-y-2"><Label>Categoria</Label>{watch("tipo") === "despesa" ? (
+          <Select value={watch("categoria") || ""} onValueChange={(v) => setValue("categoria", v)}>
+            <SelectTrigger><SelectValue placeholder="Escolha" /></SelectTrigger>
+            <SelectContent>{CUSTO_CATS.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+          </Select>
+        ) : <Input {...register("categoria")} placeholder="Ex: Serviços" />}</div>
         <div className="space-y-2"><Label>Forma de pagamento</Label><Input {...register("forma_pagamento")} /></div>
       </div>
       <Button type="submit" disabled={loading} className="w-full">Salvar</Button>

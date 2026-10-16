@@ -13,8 +13,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const planFeatures: Record<string, string[]> = {
   starter: ['Até 2 profissionais', 'Agenda completa', 'CRM de clientes', 'Link público de agendamento', 'Relatórios básicos'],
-  pro: ['Até 8 profissionais', 'Tudo do Starter', 'Link na Bio Personalizado', 'AI Growth Engine', 'Pacotes e sessões', 'WhatsApp ilimitado', 'Suporte prioritário'],
-  enterprise: ['Profissionais ilimitados', 'Página de Vendas Exclusiva', 'White-label', 'Multi-unidade', 'API e integrações', 'Onboarding dedicado', 'Gerente de sucesso'],
+  pro: ['Até 8 profissionais', 'Tudo do Starter', 'Link na Bio Personalizado', 'Dashboard de Custos vs Retorno', 'AI Growth Engine', 'Pacotes e sessões', 'WhatsApp ilimitado', 'Suporte prioritário'],
+  enterprise: ['Profissionais ilimitados', 'Página de Vendas Exclusiva', 'Dashboard de Custos vs Retorno', 'White-label', 'Multi-unidade', 'API e integrações', 'Onboarding dedicado', 'Gerente de sucesso'],
 };
 const labels: Record<string, string> = { trial: 'Período gratuito', ativo: 'Ativa', active: 'Ativa', trialing: 'Período gratuito', past_due: 'Pagamento pendente', inadimplente: 'Pagamento pendente', unpaid: 'Pagamento pendente', incomplete: 'Pagamento pendente', canceled: 'Cancelada', cancelado: 'Cancelada', incomplete_expired: 'Pagamento não concluído', suspenso: 'Suspensa' };
 export function SalonBilling({ salao }: { salao: Database['public']['Tables']['salao']['Row'] }) {
