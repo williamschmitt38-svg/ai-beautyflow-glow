@@ -56,6 +56,7 @@ const steps = [
 ];
 
 const aiBenefits = [
+  "Dashboard de Custos vs Retorno: saiba o lucro real do mês (Pro e Enterprise)",
   "Reativa clientes inativos automaticamente",
   "Detecta horários fracos e sugere promoções",
   "Mensagens prontas para WhatsApp em 1 clique",
