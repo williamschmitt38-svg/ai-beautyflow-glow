@@ -11,6 +11,8 @@ import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useAuth } from "@/hooks/useAuth";
+import { useState } from "react";
+import { billingPlans } from "@/lib/billing-plans";
 import glowflowEmblem from "@/assets/glowflow-emblem.png";
 
 export const Route = createFileRoute("/")({
@@ -77,8 +79,8 @@ const testimonials = [
 
 const planos = [
   { nome: "Starter", preco: "R$ 39,00", desc: "Para profissionais de estética começando a se organizar.", features: ["Até 2 profissionais", "Agenda completa", "CRM de clientes", "Link público de agendamento", "Relatórios básicos"] },
-  { nome: "Pro", preco: "R$ 79,00", desc: "O plano mais escolhido por salões e clínicas em crescimento.", features: ["Até 8 profissionais", "Tudo do Starter", "Link na Bio Personalizado", "Dashboard de Custos vs Retorno", "AI Growth Engine", "Pacotes e sessões", "WhatsApp ilimitado", "Suporte prioritário"], destaque: true },
-  { nome: "Enterprise", preco: "R$ 129,90", desc: "Para redes e operações high-end.", features: ["Profissionais ilimitados", "Página de Vendas Exclusiva", "Dashboard de Custos vs Retorno", "White-label", "Multi-unidade", "API e integrações", "Onboarding dedicado", "Gerente de sucesso"] },
+  { nome: "Pro", preco: "R$ 79,00", desc: "O plano mais escolhido por salões e clínicas em crescimento.", features: ["Até 8 profissionais", "Tudo do Starter", "Link na Bio Personalizado", "Dashboard de Custos vs Retorno", "Consultor financeiro com IA", "AI Growth com mensagens por IA", "Pacotes e sessões", "WhatsApp ilimitado", "Suporte prioritário"], destaque: true },
+  { nome: "Enterprise", preco: "R$ 129,90", desc: "Para redes e operações high-end.", features: ["Profissionais ilimitados", "Página de Vendas Exclusiva", "Dashboard de Custos vs Retorno", "Consultor financeiro com IA", "AI Growth com mensagens por IA", "White-label", "Multi-unidade", "API e integrações", "Onboarding dedicado", "Gerente de sucesso"] },
 ];
 
 const faqs = [
@@ -313,10 +315,7 @@ function Landing() {
                 )}
                 <CardContent className="p-8 md:p-6 lg:p-8">
                   <h3 className="text-xl font-bold">{p.nome}</h3>
-                  <div className="mt-3 flex flex-wrap items-baseline gap-x-1">
-                    <span className="whitespace-nowrap text-4xl font-black lg:text-5xl">{p.preco}</span>
-                    <span className={p.destaque ? "text-zinc-400" : "text-zinc-500"}>/mês</span>
-                  </div>
+                  <PlanPrice nome={p.nome} preco={p.preco} destaque={!!p.destaque} />
                   <p className={`mt-3 text-sm ${p.destaque ? "text-zinc-400" : "text-zinc-600"}`}>{p.desc}</p>
                   <ul className="mt-7 space-y-3">
                     {p.features.map((f) => (
@@ -385,6 +384,29 @@ function Landing() {
           <p className="text-sm">© {new Date().getFullYear()} GlowVitta — Gestão para Estética e Saúde</p>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function PlanPrice({ nome, preco, destaque }: { nome: string; preco: string; destaque: boolean }) {
+  const [anual, setAnual] = useState(false);
+  const plan = Object.values(billingPlans).find((b) => b.name === nome)!;
+  const muted = destaque ? "text-zinc-400" : "text-zinc-500";
+  const fmt = (n: number) => n.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return (
+    <div className="mt-3">
+      <div className={`mb-3 inline-flex rounded-full p-1 text-xs font-semibold ${destaque ? "bg-white/10" : "bg-zinc-100"}`}>
+        {[false, true].map((a) => (
+          <button key={String(a)} type="button" onClick={() => setAnual(a)} className={`rounded-full px-3 py-1 transition ${anual === a ? (destaque ? "bg-white text-zinc-900" : "bg-white text-zinc-900 shadow-sm") : muted}`}>
+            {a ? `Anual −${plan.annualDiscount}%` : "Mensal"}
+          </button>
+        ))}
+      </div>
+      <div className="flex flex-wrap items-baseline gap-x-1">
+        <span className="whitespace-nowrap text-4xl font-black lg:text-5xl">{anual ? `R$ ${fmt(plan.annualAmount)}` : preco}</span>
+        <span className={muted}>{anual ? "/ano" : "/mês"}</span>
+      </div>
+      {anual && <p className={`mt-1 text-xs ${muted}`}>Equivale a R$ {fmt(plan.annualAmount / 12)}/mês · renova a cada 12 meses</p>}
     </div>
   );
 }
