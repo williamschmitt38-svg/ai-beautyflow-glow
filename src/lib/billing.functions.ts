@@ -14,7 +14,7 @@ export const checkSalonSubscription = createServerFn({ method: 'POST' })
     return syncBilling(key, salon);
   });
 export const createSalonCheckout = createServerFn({ method: 'POST' })
-  .middleware([requireSupabaseAuth]).inputValidator(salonInput.extend({ plan: z.enum(['starter', 'pro', 'enterprise']) }))
+  .middleware([requireSupabaseAuth]).inputValidator(salonInput.extend({ plan: z.enum(['starter', 'pro', 'enterprise']), interval: z.enum(['month', 'year']).default('month') }))
   .handler(async ({ data, context }) => {
     const salon = await authorizeBilling(context.supabase, data.salaoId, context.userId);
     const key = process.env['STRIPE_SECRET_KEY'];
@@ -25,13 +25,13 @@ export const createSalonCheckout = createServerFn({ method: 'POST' })
     const origin = new URL(getRequest().url).origin;
     const session = await stripeRequest(key, 'checkout/sessions', {
       mode: 'subscription', customer: customer.stripe_customer_id,
-      'line_items[0][price]': billingPlans[data.plan].priceId, 'line_items[0][quantity]': '1',
+      'line_items[0][price]': (data.interval === 'year' ? billingPlans[data.plan].annualPriceId : billingPlans[data.plan].priceId), 'line_items[0][quantity]': '1',
       'subscription_data[metadata][salao_id]': salon.id, 'subscription_data[billing_mode][type]': 'flexible',
       'metadata[salao_id]': salon.id, client_reference_id: salon.id,
       success_url: `${origin}/app/configuracoes?tab=cobranca&payment=success`,
       cancel_url: `${origin}/app/configuracoes?tab=cobranca&payment=cancel`,
       locale: 'pt-BR', 'adaptive_pricing[enabled]': 'false', allow_promotion_codes: 'true',
-    }, `bf-checkout-v2-${salon.id}-${data.plan}-${Math.floor(Date.now() / 1800000)}`);
+    }, `bf-checkout-v3-${salon.id}-${data.plan}-${data.interval}-${Math.floor(Date.now() / 1800000)}`);
     return { url: session.url as string };
   });
 export const createSalonPortal = createServerFn({ method: 'POST' })
@@ -49,12 +49,12 @@ export const createSalonPortal = createServerFn({ method: 'POST' })
       'features[subscription_update][default_allowed_updates][0]': 'price',
       'features[subscription_update][proration_behavior]': 'create_prorations',
       'features[subscription_update][products][0][product]': 'prod_VQdVWFItp3dubV',
-      'features[subscription_update][products][0][prices][0]': billingPlans.starter.priceId,
+      'features[subscription_update][products][0][prices][0]': billingPlans.starter.priceId, 'features[subscription_update][products][0][prices][1]': billingPlans.starter.annualPriceId,
       'features[subscription_update][products][1][product]': 'prod_VQdWDEwMMFqUQG',
-      'features[subscription_update][products][1][prices][0]': billingPlans.pro.priceId,
+      'features[subscription_update][products][1][prices][0]': billingPlans.pro.priceId, 'features[subscription_update][products][1][prices][1]': billingPlans.pro.annualPriceId,
       'features[subscription_update][products][2][product]': 'prod_VQdWXiMNpYv10U',
-      'features[subscription_update][products][2][prices][0]': billingPlans.enterprise.priceId,
-    }, 'beautyflow-portal-v1');
+      'features[subscription_update][products][2][prices][0]': billingPlans.enterprise.priceId, 'features[subscription_update][products][2][prices][1]': billingPlans.enterprise.annualPriceId,
+    }, 'glowvitta-portal-v2');
     const session = await stripeRequest(key, 'billing_portal/sessions', { customer: customer.stripe_customer_id, configuration: config.id, return_url: `${new URL(getRequest().url).origin}/app/configuracoes?tab=cobranca`, locale: 'pt-BR' });
     return { url: session.url as string };
   });

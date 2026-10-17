@@ -55,5 +55,4 @@ export async function syncBilling(key: string, salon: Database['public']['Tables
   if (saveError || salonError) throw new Error('Não foi possível atualizar o status da assinatura.');
   const end = item.current_period_end || sub.current_period_end;
   return { subscribed, status: sub.status as string, plan, interval, periodEnd: end ? new Date(end * 1000).toISOString() : null, cancelAtPeriodEnd: !!sub.cancel_at_period_end, canManage: true };
-  return { subscribed, status: sub.status as string, plan, periodEnd: end ? new Date(end * 1000).toISOString() : null, cancelAtPeriodEnd: !!sub.cancel_at_period_end, canManage: true };
 }
