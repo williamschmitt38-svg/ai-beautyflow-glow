@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/integrations/supabase/types';
-import { billingPlans, type BillingPlan } from './billing-plans';
+import { billingPlans, planForPrice } from "./billing-plans";
 
 export async function authorizeBilling(db: SupabaseClient<Database>, id: string, userId: string) {
   const { data: allowed, error } = await db.from('salao_user').select('id').eq('salao_id', id).eq('user_id', userId).eq('role', 'owner').eq('ativo', true).limit(1);
@@ -39,7 +39,7 @@ export async function syncBilling(key: string, salon: Database['public']['Tables
   const { supabaseAdmin: admin } = await import('@/integrations/supabase/client.server');
   const { data: billing, error } = await admin.from('salao_billing').select('*').eq('salao_id', salon.id).maybeSingle();
   if (error) throw new Error('Não foi possível consultar a assinatura.');
-  if (!billing) return { subscribed: false, status: 'not_started', plan: salon.plano, periodEnd: null, cancelAtPeriodEnd: false, canManage: false };
+  if (!billing) return { subscribed: false, status: 'not_started', plan: salon.plano, interval: 'month' as const, periodEnd: null, cancelAtPeriodEnd: false, canManage: false };
   const result = await stripeRequest(key, `subscriptions?customer=${encodeURIComponent(billing.stripe_customer_id)}&status=all&limit=100`);
   const candidates = result.data.filter((s: any) => s.metadata?.salao_id === salon.id && s.items.data.some((i: any) => planForPrice(i.price.id)));
   const sub = candidates.find((s: any) => ['active', 'trialing', 'past_due', 'unpaid'].includes(s.status)) || candidates[0];
