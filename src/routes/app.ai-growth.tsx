@@ -5,7 +5,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { generateWhatsAppMessage } from "@/lib/ai.functions";
 import { toast } from "sonner";
-import { Brain, Sparkles, Copy, TrendingUp, ChevronRight, MessageCircle, Lightbulb, Check, Wand2, Loader2 } from "lucide-react";
+import { Brain, Sparkles, Copy, TrendingUp, ChevronRight, MessageCircle, Lightbulb, Check, Wand2, Loader2, Lock } from "lucide-react";
+import { UpgradeModal } from "@/components/UpgradeModal";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -153,6 +154,7 @@ function InsightCard({ ins, salaoId, paid, expanded, onToggle }: { ins: Insight;
   const [msg, setMsg] = useState(ins.mensagem);
   const [custom, setCustom] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState<string | null>(null);
+  const [upgrade, setUpgrade] = useState(false);
   const qc = useQueryClient();
   const gen = useServerFn(generateWhatsAppMessage);
   async function aiMsg(c: Cli) {
@@ -208,7 +210,8 @@ function InsightCard({ ins, salaoId, paid, expanded, onToggle }: { ins: Insight;
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <span className="min-w-0 truncate">{c.nome}</span>
                       <div className="flex flex-wrap items-center gap-1">
-                      {paid && <Button size="sm" variant="outline" disabled={!!busy} onClick={() => aiMsg(c)}>{busy === "ai-" + c.id ? <Loader2 className="mr-1 h-3 w-3 animate-spin" /> : <Wand2 className="mr-1 h-3 w-3" />} IA</Button>}
+                      {paid ? <Button size="sm" variant="outline" disabled={!!busy} onClick={() => aiMsg(c)}>{busy === "ai-" + c.id ? <Loader2 className="mr-1 h-3 w-3 animate-spin" /> : <Wand2 className="mr-1 h-3 w-3" />} IA</Button>
+                        : <Button size="sm" variant="outline" onClick={() => setUpgrade(true)}><Lock className="mr-1 h-3 w-3" /> IA <span className="ml-1 rounded bg-primary/10 px-1 text-[10px] font-bold text-primary">PRO</span></Button>}
                       <Button size="sm" variant="ghost" disabled={!!busy} onClick={() => contatado(c)}><Check className="mr-1 h-3 w-3" /> Contatado</Button>
                       {link ? (
                         <Button asChild size="sm" className="bg-gradient-to-r from-rose-500 to-pink-500 text-white hover:opacity-90">
