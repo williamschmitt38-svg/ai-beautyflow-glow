@@ -15,7 +15,7 @@ export function CustoRetorno({ salaoId, mStart, mEnd, despesasList }: { salaoId:
   });
   const unlocked = plano === "pro" || plano === "enterprise";
   const { data: receita = 0 } = useQuery({
-    queryKey: ["retorno-atend", salaoId, mStart],
+    queryKey: ["retorno-atend", salaoId, mStart, mEnd],
     enabled: unlocked,
     queryFn: async () => {
       const { data } = await supabase.from("agendamento").select("valor").eq("company_id", salaoId).in("status", ["confirmado", "concluido"]).gte("data", mStart).lte("data", mEnd);
@@ -54,7 +54,7 @@ export function CustoRetorno({ salaoId, mStart, mEnd, despesasList }: { salaoId:
         <Mini label="ROI / Margem" value={`${roi.toFixed(0)}% · ${margem.toFixed(0)}%`} icon={Percent} />
       </div>
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card><CardHeader><CardTitle className="text-sm">Comparativo do mês</CardTitle></CardHeader>
+        <Card><CardHeader><CardTitle className="text-sm">Comparativo do período</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <Bar label="Retorno" value={receita} max={max} cls="bg-primary" />
             <Bar label="Custos" value={custo} max={max} cls="bg-destructive" />
@@ -62,7 +62,7 @@ export function CustoRetorno({ salaoId, mStart, mEnd, despesasList }: { salaoId:
           </CardContent></Card>
         <Card><CardHeader><CardTitle className="text-sm">Gastos por categoria</CardTitle></CardHeader>
           <CardContent className="space-y-3">
-            {cats.length === 0 && <p className="text-sm text-muted-foreground">Nenhuma despesa neste mês.</p>}
+            {cats.length === 0 && <p className="text-sm text-muted-foreground">Nenhuma despesa neste período.</p>}
             {cats.map(([c, v]) => <Bar key={c} label={`${c} · ${custo ? ((v / custo) * 100).toFixed(0) : 0}%`} value={v} max={custo} cls="bg-destructive/70" />)}
           </CardContent></Card>
       </div>

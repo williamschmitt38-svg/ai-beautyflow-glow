@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { format, startOfMonth, endOfMonth } from "date-fns";
+import { format, startOfMonth, endOfMonth, subMonths, subDays, startOfYear } from "date-fns";
 import { Trash2, TrendingUp, TrendingDown, Wallet } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSalao } from "@/hooks/useSalao";
@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { CustoRetorno, CUSTO_CATS } from "@/components/CustoRetorno";
+import { ConsultorFinanceiro } from "@/components/ConsultorFinanceiro";
 
 export const Route = createFileRoute("/app/financeiro")({ head: () => pageHead("Financeiro", "Financeiro: gestão de salões de beleza no GlowVitta."), component: Financeiro });
 
@@ -36,11 +37,22 @@ function Financeiro() {
   const { salaoId } = useSalao();
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
-  const mStart = format(startOfMonth(new Date()), "yyyy-MM-dd");
-  const mEnd = format(endOfMonth(new Date()), "yyyy-MM-dd");
+  const f = (d: Date) => format(d, "yyyy-MM-dd");
+  const [preset, setPreset] = useState("mes");
+  const [custom, setCustom] = useState({ start: f(startOfMonth(new Date())), end: f(endOfMonth(new Date())) });
+  const now = new Date();
+  const ranges: Record<string, { start: string; end: string; label: string }> = {
+    mes: { start: f(startOfMonth(now)), end: f(endOfMonth(now)), label: "Mês atual" },
+    anterior: { start: f(startOfMonth(subMonths(now, 1))), end: f(endOfMonth(subMonths(now, 1))), label: "Mês anterior" },
+    d90: { start: f(subDays(now, 89)), end: f(now), label: "Últimos 90 dias" },
+    ano: { start: f(startOfYear(now)), end: f(now), label: "Este ano" },
+    custom: { ...custom, label: "Personalizado" },
+  };
+  const mStart = ranges[preset].start;
+  const mEnd = ranges[preset].end;
 
   const { data: lancamentos } = useQuery({
-    queryKey: ["lancamentos", salaoId],
+    queryKey: ["lancamentos", salaoId, mStart, mEnd],
     enabled: !!salaoId,
     queryFn: async () => (await supabase.from("lancamento").select("*").eq("company_id", salaoId!).gte("data", mStart).lte("data", mEnd).order("data", { ascending: false })).data ?? [],
   });
@@ -63,13 +75,22 @@ function Financeiro() {
 
   return (
     <div>
-      <PageHeader title="Financeiro" description="Receitas e despesas do mês" action={<NewButton label="Novo lançamento" onClick={() => setOpen(true)} />} />
+      <PageHeader title="Financeiro" description="Receitas, despesas e retorno do período escolhido" action={<NewButton label="Novo lançamento" onClick={() => setOpen(true)} />} />
+      <div className="mb-6 flex flex-wrap items-end gap-2">
+        {Object.entries(ranges).map(([k, r]) => <Button key={k} size="sm" variant={preset === k ? "default" : "outline"} onClick={() => setPreset(k)}>{r.label}</Button>)}
+        {preset === "custom" && <div className="flex flex-wrap items-center gap-2">
+          <Input type="date" className="w-auto" value={custom.start} onChange={(e) => setCustom((c) => ({ ...c, start: e.target.value }))} />
+          <span className="text-sm text-muted-foreground">até</span>
+          <Input type="date" className="w-auto" value={custom.end} onChange={(e) => setCustom((c) => ({ ...c, end: e.target.value }))} />
+        </div>}
+      </div>
       <div className="mb-6 grid gap-4 md:grid-cols-3">
         <Kpi label="Receitas" value={receitas} icon={TrendingUp} color="text-emerald-600" />
         <Kpi label="Despesas" value={despesas} icon={TrendingDown} color="text-destructive" />
         <Kpi label="Saldo" value={receitas - despesas} icon={Wallet} color="text-primary" />
       </div>
       {salaoId && <CustoRetorno salaoId={salaoId} mStart={mStart} mEnd={mEnd} despesasList={(lancamentos ?? []).filter((l: any) => l.tipo === "despesa")} />}
+      {salaoId && <ConsultorFinanceiro salaoId={salaoId} start={mStart} end={mEnd} />}
       <Card>
         <Table>
           <TableHeader><TableRow><TableHead>Data</TableHead><TableHead>Tipo</TableHead><TableHead>Descrição</TableHead><TableHead>Categoria</TableHead><TableHead className="text-right">Valor</TableHead><TableHead></TableHead></TableRow></TableHeader>
@@ -84,7 +105,7 @@ function Financeiro() {
                 <TableCell><Button size="icon" variant="ghost" onClick={() => confirm("Remover?") && del.mutate(l.id)}><Trash2 className="h-4 w-4" /></Button></TableCell>
               </TableRow>
             ))}
-            {lancamentos?.length === 0 && <TableRow><TableCell colSpan={6} className="py-8 text-center text-muted-foreground">Nenhum lançamento neste mês</TableCell></TableRow>}
+            {lancamentos?.length === 0 && <TableRow><TableCell colSpan={6} className="py-8 text-center text-muted-foreground">Nenhum lançamento neste período</TableCell></TableRow>}
           </TableBody>
         </Table>
       </Card>
