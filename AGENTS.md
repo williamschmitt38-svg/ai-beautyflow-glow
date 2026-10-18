@@ -12,3 +12,6 @@
 - Salon billing uses a distinct Stripe customer per salon and server-only billing records; owner authorization precedes privileged reads and writes to prevent cross-salon subscription access.
 - Billing status and plan updates must come from verified Stripe subscription state; a database trigger prevents tenant self-activation or trial extension, while preserving administrative suspension.
 - Subscription state is reconciled on authenticated salon load, window focus and every minute without webhooks; offline renewal changes are discovered on the next reconciliation.
+- Annual billing uses separate yearly Stripe prices on the same products; plan resolution maps both monthly and annual price IDs so existing subscriptions keep working.
+- AI features call the AI Gateway only from authenticated server functions that verify the salon's paid plan, so prompts and salon data never run in the browser.
+- AI Growth "contacted" marks are keyed by opportunity plus the client's last-visit (or year), so a new visit or new cycle surfaces the client again.
