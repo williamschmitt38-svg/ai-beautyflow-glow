@@ -1,9 +1,11 @@
 import { pageHead } from "@/lib/page-head";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { generateWhatsAppMessage } from "@/lib/ai.functions";
 import { toast } from "sonner";
-import { Brain, Sparkles, Copy, TrendingUp, ChevronRight, MessageCircle, Lightbulb } from "lucide-react";
+import { Brain, Sparkles, Copy, TrendingUp, ChevronRight, MessageCircle, Lightbulb, Check, Wand2, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,7 +24,7 @@ const severityMap = {
   oportunidade: { label: "OPORTUNIDADE", color: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30" },
 } as const;
 
-type Cli = { id: string; nome: string; telefone: string | null };
+type Cli = { id: string; nome: string; telefone: string | null; chave?: string };
 type Insight = {
   id: string; severity: keyof typeof severityMap; titulo: string; resumo: string;
   impacto: number; clientes: Cli[]; mensagem: string;
@@ -46,12 +48,14 @@ function AIGrowth() {
     queryKey: ["ai-growth", salaoId],
     enabled: !!salaoId,
     queryFn: async () => {
-      const [s, c, a] = await Promise.all([
-        supabase.from("salao").select("nome_salao").eq("id", salaoId!).maybeSingle(),
+      const [s, c, a, k] = await Promise.all([
+        supabase.from("salao").select("nome_salao,plano").eq("id", salaoId!).maybeSingle(),
         supabase.from("cliente").select("id,nome,telefone,data_nascimento,ativo").eq("company_id", salaoId!).eq("ativo", true),
         supabase.from("agendamento").select("cliente_id,data,valor,status").eq("company_id", salaoId!).in("status", ["confirmado", "concluido"]),
+        supabase.from("oportunidade_contato").select("cliente_id,chave").eq("company_id", salaoId!),
       ]);
-      return { salao: (s.data as { nome_salao?: string } | null)?.nome_salao ?? "nosso espaço", clientes: c.data ?? [], ags: a.data ?? [] };
+      const sd = s.data as { nome_salao?: string; plano?: string } | null;
+      return { salao: sd?.nome_salao ?? "nosso espaço", paid: sd?.plano === "pro" || sd?.plano === "enterprise", clientes: c.data ?? [], ags: a.data ?? [], contatos: new Set((k.data ?? []).map((r) => `${r.cliente_id}|${r.chave}`)) };
     },
   });
 
@@ -81,6 +85,13 @@ function AIGrowth() {
     const aniv = cli.filter((c) => c.data_nascimento && Number(c.data_nascimento.slice(5, 7)) === mes);
     const nunca = cli.filter((c) => !stats.has(c.id));
 
+    const yr = new Date().getFullYear();
+    const tag = (list: typeof cli, key: (c: Cli) => string) => list.map((c) => ({ ...c, chave: key(c) })).filter((c) => !data.contatos.has(`${c.id}|${c.chave}`));
+    const vipT = tag(vip, (c) => `vip-${stats.get(c.id)!.last}`);
+    const inaT = tag(inativos, (c) => `inativo-${stats.get(c.id)!.last}`);
+    const anivT = tag(aniv, () => `aniv-${yr}`);
+    const nuncaT = tag(nunca, () => "nunca");
+    vip.splice(0, vip.length, ...vipT); inativos.splice(0, inativos.length, ...inaT); aniv.splice(0, aniv.length, ...anivT); nunca.splice(0, nunca.length, ...nuncaT);
     const out: Insight[] = [];
     if (vip.length) out.push({ id: "vip", severity: "alta", titulo: `${vip.length} cliente(s) VIP sem voltar há +30 dias`, resumo: "Clientes que mais gastaram com você. Vale um convite especial.", impacto: Math.round(vip.reduce((x, c) => x + stats.get(c.id)!.total / stats.get(c.id)!.n, 0)), clientes: vip, mensagem: `Olá {nome}! ✨ Sentimos sua falta aqui no ${nm}. Separei um horário especial pra você essa semana — posso reservar?` });
     if (inativos.length) out.push({ id: "inativos", severity: "alta", titulo: `${inativos.length} cliente(s) inativo(s) há +45 dias`, resumo: "Uma mensagem carinhosa costuma trazer boa parte de volta.", impacto: Math.round(inativos.length * ticket), clientes: inativos, mensagem: `Oi {nome}! 💖 Faz um tempinho que não te vejo aqui no ${nm}. Temos horários livres essa semana, vem me visitar? 😊` });
@@ -118,7 +129,7 @@ function AIGrowth() {
             <Card><CardContent className="p-6 text-sm text-muted-foreground">Nenhuma oportunidade no momento. Conforme você cadastra clientes e confirma atendimentos, as sugestões aparecem aqui.</CardContent></Card>
           )}
           {insights.map((ins) => (
-            <InsightCard key={ins.id} ins={ins} expanded={expanded === ins.id} onToggle={() => setExpanded(expanded === ins.id ? null : ins.id)} />
+            <InsightCard key={ins.id} ins={ins} salaoId={salaoId!} paid={!!data?.paid} expanded={expanded === ins.id} onToggle={() => setExpanded(expanded === ins.id ? null : ins.id)} />
           ))}
         </div>
         <Card className="h-fit">
@@ -127,6 +138,8 @@ function AIGrowth() {
             <p className="text-muted-foreground">1. Abra uma oportunidade e ajuste a mensagem se quiser.</p>
             <p className="text-muted-foreground">2. Clique em <strong>WhatsApp</strong> ao lado de cada cliente: a conversa abre com o nome e o texto prontos.</p>
             <p className="text-muted-foreground">3. É só apertar enviar. Sem custo extra e sem risco para o seu número.</p>
+            <p className="text-muted-foreground">4. Use <strong>IA</strong> para criar uma mensagem personalizada com o histórico do cliente (Pro e Enterprise).</p>
+            <p className="text-muted-foreground">5. Clique em <strong>Contatado</strong> para tirar o cliente da lista. Ele volta só quando surgir uma nova oportunidade.</p>
             <p className="text-xs text-muted-foreground">Clientes sem telefone cadastrado aparecem sem o botão — complete o cadastro em Clientes.</p>
           </CardContent>
         </Card>
@@ -135,9 +148,27 @@ function AIGrowth() {
   );
 }
 
-function InsightCard({ ins, expanded, onToggle }: { ins: Insight; expanded: boolean; onToggle: () => void }) {
+function InsightCard({ ins, salaoId, paid, expanded, onToggle }: { ins: Insight; salaoId: string; paid: boolean; expanded: boolean; onToggle: () => void }) {
   const s = severityMap[ins.severity];
   const [msg, setMsg] = useState(ins.mensagem);
+  const [custom, setCustom] = useState<Record<string, string>>({});
+  const [busy, setBusy] = useState<string | null>(null);
+  const qc = useQueryClient();
+  const gen = useServerFn(generateWhatsAppMessage);
+  async function aiMsg(c: Cli) {
+    setBusy("ai-" + c.id);
+    try { const r = await gen({ data: { salaoId, clienteId: c.id, oportunidade: ins.titulo } }); setCustom((m) => ({ ...m, [c.id]: r.message })); toast.success("Mensagem personalizada pronta"); }
+    catch (e) { toast.error(e instanceof Error ? e.message : "Não foi possível gerar a mensagem."); }
+    finally { setBusy(null); }
+  }
+  async function contatado(c: Cli) {
+    setBusy("ok-" + c.id);
+    const { error } = await supabase.from("oportunidade_contato").upsert({ company_id: salaoId, cliente_id: c.id, chave: c.chave! }, { onConflict: "company_id,cliente_id,chave", ignoreDuplicates: true });
+    setBusy(null);
+    if (error) return toast.error("Não foi possível marcar como contatado.");
+    toast.success(`${firstName(c.nome)} marcado(a) como contatado(a)`);
+    qc.invalidateQueries({ queryKey: ["ai-growth", salaoId] });
+  }
   return (
     <Card className="overflow-hidden transition hover:shadow-md">
       <CardContent className="p-0">
@@ -170,15 +201,23 @@ function InsightCard({ ins, expanded, onToggle }: { ins: Insight; expanded: bool
               <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Clientes ({ins.clientes.length})</div>
               <div className="divide-y rounded-xl border bg-background">
                 {ins.clientes.map((c) => {
-                  const link = waLink(c.telefone, msg.replaceAll("{nome}", firstName(c.nome)));
+                  const text = custom[c.id] ?? msg.replaceAll("{nome}", firstName(c.nome));
+                  const link = waLink(c.telefone, text);
                   return (
-                    <div key={c.id} className="flex items-center justify-between gap-2 px-3 py-2 text-sm">
+                    <div key={c.id} className="space-y-2 px-3 py-2 text-sm">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <span className="min-w-0 truncate">{c.nome}</span>
+                      <div className="flex flex-wrap items-center gap-1">
+                      {paid && <Button size="sm" variant="outline" disabled={!!busy} onClick={() => aiMsg(c)}>{busy === "ai-" + c.id ? <Loader2 className="mr-1 h-3 w-3 animate-spin" /> : <Wand2 className="mr-1 h-3 w-3" />} IA</Button>}
+                      <Button size="sm" variant="ghost" disabled={!!busy} onClick={() => contatado(c)}><Check className="mr-1 h-3 w-3" /> Contatado</Button>
                       {link ? (
                         <Button asChild size="sm" className="bg-gradient-to-r from-rose-500 to-pink-500 text-white hover:opacity-90">
                           <a href={link} target="_blank" rel="noopener noreferrer"><MessageCircle className="mr-1 h-3 w-3" /> WhatsApp</a>
                         </Button>
                       ) : <span className="text-xs text-muted-foreground">sem telefone</span>}
+                      </div>
+                    </div>
+                    {custom[c.id] !== undefined && <Textarea rows={3} value={custom[c.id]} onChange={(e) => setCustom((m) => ({ ...m, [c.id]: e.target.value }))} className="bg-muted/30 text-sm" />}
                     </div>
                   );
                 })}

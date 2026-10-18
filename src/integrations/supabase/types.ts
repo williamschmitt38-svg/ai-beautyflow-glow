@@ -268,6 +268,45 @@ export type Database = {
         }
         Relationships: []
       }
+      oportunidade_contato: {
+        Row: {
+          chave: string
+          cliente_id: string
+          company_id: string
+          contatado_em: string
+          id: string
+        }
+        Insert: {
+          chave: string
+          cliente_id: string
+          company_id: string
+          contatado_em?: string
+          id?: string
+        }
+        Update: {
+          chave?: string
+          cliente_id?: string
+          company_id?: string
+          contatado_em?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "oportunidade_contato_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "cliente"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "oportunidade_contato_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "salao"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pacote: {
         Row: {
           ativo: boolean
