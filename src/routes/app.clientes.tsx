@@ -156,6 +156,7 @@ function Clientes() {
           </TableBody>
         </Table>
       </Card>
+      <UpgradeModal open={upgrade} onOpenChange={setUpgrade} message="O Histórico de Gastos e o LTV de cada cliente são exclusivos dos planos Pro e Enterprise. Desbloqueie agora para saber quem são suas melhores clientes!" />
       <Dialog open={!!detail} onOpenChange={(o) => !o && setDetail(null)}>
         <DialogContent>
           <DialogHeader><DialogTitle>{detail?.nome}</DialogTitle></DialogHeader>
