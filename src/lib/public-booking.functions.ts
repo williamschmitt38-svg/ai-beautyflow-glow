@@ -33,13 +33,13 @@ export const getAvailableSlots = createServerFn({ method: "GET" })
     const { data: salao } = await supabaseAdmin.from("salao").select("id, horarios_funcionamento").eq("slug", data.slug).maybeSingle();
     if (!salao) throw new Error("Salão não encontrado");
     const [{ data: prof }, { data: servico }, { data: bloqueios }] = await Promise.all([
-      supabaseAdmin.from("profissional").select("hora_inicio, hora_fim, dias_atendimento, usa_horario_salao").eq("id", data.profissional_id).eq("company_id", salao.id).maybeSingle(),
+      supabaseAdmin.from("profissional").select("hora_inicio, hora_fim, dias_atendimento, usa_horario_salao, pausa_inicio, pausa_fim").eq("id", data.profissional_id).eq("company_id", salao.id).maybeSingle(),
       supabaseAdmin.from("servico").select("duracao_minutos").eq("id", data.servico_id).eq("company_id", salao.id).maybeSingle(),
       supabaseAdmin.from("agenda_bloqueio").select("profissional_id, motivo").eq("company_id", salao.id).eq("data", data.data).or(`profissional_id.is.null,profissional_id.eq.${data.profissional_id}`),
     ]);
     if (!prof || !servico) throw new Error("Profissional ou serviço inválido");
 
-    const { resolverJanela } = await import("@/lib/agenda");
+    const { resolverJanela, colideComPausa } = await import("@/lib/agenda");
     const janela = resolverJanela({ data: data.data, semanaSalao: salao.horarios_funcionamento, prof, bloqueios: bloqueios ?? [] });
     if (!janela.aberto) return { slots: [] as string[], motivo: janela.motivo };
     const inicio = janela.inicio;
@@ -66,6 +66,7 @@ export const getAvailableSlots = createServerFn({ method: "GET" })
     const nowMin = now.getHours() * 60 + now.getMinutes();
     for (let t = inicio; t + dur <= fim; t += step) {
       if (isToday && t <= nowMin) continue;
+      if (colideComPausa(t, dur, janela.pausas)) continue;
       const conflito = ocupados.some((o) => t < o.fim && o.ini < t + dur);
       if (!conflito) slots.push(`${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`);
     }
@@ -93,7 +94,7 @@ export const createPublicAgendamento = createServerFn({ method: "POST" })
 
     const [{ data: servico }, { data: prof }, { data: bloqueios }] = await Promise.all([
       supabaseAdmin.from("servico").select("id, nome, valor, duracao_minutos").eq("id", data.servico_id).eq("company_id", salao.id).maybeSingle(),
-      supabaseAdmin.from("profissional").select("id, nome, hora_inicio, hora_fim, dias_atendimento, usa_horario_salao").eq("id", data.profissional_id).eq("company_id", salao.id).maybeSingle(),
+      supabaseAdmin.from("profissional").select("id, nome, hora_inicio, hora_fim, dias_atendimento, usa_horario_salao, pausa_inicio, pausa_fim").eq("id", data.profissional_id).eq("company_id", salao.id).maybeSingle(),
       supabaseAdmin.from("agenda_bloqueio").select("profissional_id, motivo").eq("company_id", salao.id).eq("data", data.data).or(`profissional_id.is.null,profissional_id.eq.${data.profissional_id}`),
     ]);
     if (!servico || !prof) throw new Error("Serviço ou profissional inválido");
@@ -102,10 +103,11 @@ export const createPublicAgendamento = createServerFn({ method: "POST" })
     const [hh, mm] = data.hora.split(":").map(Number);
     const novoInicio = hh * 60 + mm;
     const novoFim = novoInicio + (servico.duracao_minutos ?? 60);
-    const { resolverJanela } = await import("@/lib/agenda");
+    const { resolverJanela, colideComPausa } = await import("@/lib/agenda");
     const janela = resolverJanela({ data: data.data, semanaSalao: salao.horarios_funcionamento, prof, bloqueios: bloqueios ?? [] });
     if (!janela.aberto) throw new Error(janela.motivo);
     if (novoInicio < janela.inicio || novoFim > janela.fim) throw new Error("Horário fora do expediente.");
+    if (colideComPausa(novoInicio, novoFim - novoInicio, janela.pausas)) throw new Error("Horário indisponível devido ao intervalo de almoço.");
     const { data: conflitos } = await supabaseAdmin
       .from("agendamento")
       .select("hora, duracao_minutos, status")
