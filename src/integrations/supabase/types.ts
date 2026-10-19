@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      agenda_bloqueio: {
+        Row: {
+          company_id: string
+          created_at: string
+          data: string
+          id: string
+          motivo: string | null
+          profissional_id: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          data: string
+          id?: string
+          motivo?: string | null
+          profissional_id?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          data?: string
+          id?: string
+          motivo?: string | null
+          profissional_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agenda_bloqueio_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "salao"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agenda_bloqueio_profissional_id_fkey"
+            columns: ["profissional_id"]
+            isOneToOne: false
+            referencedRelation: "profissional"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agendamento: {
         Row: {
           cliente_id: string | null
@@ -444,6 +486,7 @@ export type Database = {
           nome: string
           telefone: string | null
           updated_at: string
+          usa_horario_salao: boolean
         }
         Insert: {
           ativo?: boolean
@@ -458,6 +501,7 @@ export type Database = {
           nome: string
           telefone?: string | null
           updated_at?: string
+          usa_horario_salao?: boolean
         }
         Update: {
           ativo?: boolean
@@ -472,6 +516,7 @@ export type Database = {
           nome?: string
           telefone?: string | null
           updated_at?: string
+          usa_horario_salao?: boolean
         }
         Relationships: [
           {
@@ -490,6 +535,7 @@ export type Database = {
           cor_primaria: string
           created_at: string
           endereco: string | null
+          horarios_funcionamento: Json | null
           id: string
           logo_url: string | null
           nome_fantasia: string | null
@@ -513,6 +559,7 @@ export type Database = {
           cor_primaria?: string
           created_at?: string
           endereco?: string | null
+          horarios_funcionamento?: Json | null
           id?: string
           logo_url?: string | null
           nome_fantasia?: string | null
@@ -536,6 +583,7 @@ export type Database = {
           cor_primaria?: string
           created_at?: string
           endereco?: string | null
+          horarios_funcionamento?: Json | null
           id?: string
           logo_url?: string | null
           nome_fantasia?: string | null

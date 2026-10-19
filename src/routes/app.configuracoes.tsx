@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { SalonBilling } from "@/components/SalonBilling";
+import { HorariosSalao } from "@/components/HorariosSalao";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useSalao } from "@/hooks/useSalao";
@@ -56,6 +57,7 @@ function Configuracoes() {
           <TabsTrigger value="salao">Salão</TabsTrigger>
           <TabsTrigger value="aparencia">Aparência</TabsTrigger>
           <TabsTrigger value="divulgacao">Divulgação</TabsTrigger>
+          <TabsTrigger value="horarios">Horários & Folgas</TabsTrigger>
           <TabsTrigger value="cobranca">Cobrança</TabsTrigger>
           <TabsTrigger value="perfil">Perfil</TabsTrigger>
         </TabsList>
@@ -76,6 +78,10 @@ function Configuracoes() {
 
         <TabsContent value="divulgacao">
           {salao && <DivulgacaoTab salao={salao} />}
+        </TabsContent>
+
+        <TabsContent value="horarios">
+          {salao && <HorariosSalao salao={salao} />}
         </TabsContent>
 
         <TabsContent value="cobranca">

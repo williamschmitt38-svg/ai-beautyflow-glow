@@ -211,7 +211,7 @@ function AgendarPublic() {
               <Label className="mb-2 block text-sm flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> Horários disponíveis</Label>
               {loadingSlots && <p className="text-sm text-muted-foreground">Calculando disponibilidade…</p>}
               {!loadingSlots && slotsData?.slots.length === 0 && (
-                <p className="rounded-md border bg-muted/30 p-4 text-sm text-muted-foreground">Sem horários disponíveis nessa data. Escolha outro dia.</p>
+                <p className="rounded-md border bg-muted/30 p-4 text-sm text-muted-foreground">{slotsData?.motivo ?? "Sem horários disponíveis nessa data."} Por favor, escolha outro dia.</p>
               )}
               <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
                 {slotsData?.slots.map((h) => (
