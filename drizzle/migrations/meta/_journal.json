@@ -29,6 +29,13 @@
       "when": 1791825195880,
       "tag": "0003_dynamic_salon_service_categories",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792374625333,
+      "tag": "0004_horarios_e_bloqueios",
+      "breakpoints": true
     }
   ]
 }
