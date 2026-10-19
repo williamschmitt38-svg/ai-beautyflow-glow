@@ -36,6 +36,13 @@
       "when": 1792374625333,
       "tag": "0004_horarios_e_bloqueios",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792376292500,
+      "tag": "0005_profissional_pausa",
+      "breakpoints": true
     }
   ]
 }

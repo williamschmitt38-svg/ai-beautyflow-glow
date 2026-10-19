@@ -32,6 +32,8 @@ const schema = z.object({
   hora_fim: z.string(),
   usa_horario_salao: z.boolean(),
   dias_atendimento: z.array(z.number()),
+  pausa_inicio: z.string().optional().nullable(),
+  pausa_fim: z.string().optional().nullable(),
 });
 type Form = z.infer<typeof schema>;
 
@@ -69,7 +71,8 @@ function Profissionais() {
   const save = useMutation({
     mutationFn: async (v: Form) => {
       const { nome, especialidade, telefone, hora_inicio, hora_fim, usa_horario_salao, dias_atendimento } = v;
-      const payload = { nome, especialidade, telefone, hora_inicio, hora_fim, usa_horario_salao, dias_atendimento, company_id: salaoId!, email: v.email || null };
+      const pausa_inicio = v.pausa_inicio || null, pausa_fim = v.pausa_fim || null;
+      const payload = { nome, especialidade, telefone, hora_inicio, hora_fim, usa_horario_salao, dias_atendimento, pausa_inicio, pausa_fim, company_id: salaoId!, email: v.email || null };
       const res = editing
         ? await supabase.from("profissional").update(payload).eq("id", editing.id)
         : await supabase.from("profissional").insert(payload);
@@ -178,6 +181,10 @@ function ProfForm({ initial, onSubmit, loading, salaoId }: { initial: any; onSub
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2"><Label>Hora início</Label><Input type="time" {...register("hora_inicio")} /></div>
             <div className="space-y-2"><Label>Hora fim</Label><Input type="time" {...register("hora_fim")} /></div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2"><Label>Almoço início (opcional)</Label><Input type="time" {...register("pausa_inicio")} /></div>
+            <div className="space-y-2"><Label>Almoço fim</Label><Input type="time" {...register("pausa_fim")} /></div>
           </div>
         </div>
       )}
