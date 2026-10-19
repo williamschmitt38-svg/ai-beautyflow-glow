@@ -182,6 +182,10 @@ function ProfForm({ initial, onSubmit, loading, salaoId }: { initial: any; onSub
             <div className="space-y-2"><Label>Hora início</Label><Input type="time" {...register("hora_inicio")} /></div>
             <div className="space-y-2"><Label>Hora fim</Label><Input type="time" {...register("hora_fim")} /></div>
           </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2"><Label>Almoço início (opcional)</Label><Input type="time" {...register("pausa_inicio")} /></div>
+            <div className="space-y-2"><Label>Almoço fim</Label><Input type="time" {...register("pausa_fim")} /></div>
+          </div>
         </div>
       )}
       {initial?.id && (

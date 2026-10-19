@@ -53,6 +53,17 @@ export function HorariosSalao({ salao }: { salao: any }) {
                     <Input type="time" className="w-28" value={d.fim} onChange={(e) => set(k, { fim: e.target.value })} />
                   </div>
                 ) : <span className="text-sm text-muted-foreground">Fechado</span>}
+                {d.aberto && (
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Switch checked={!!d.pausa} onCheckedChange={(v) => set(k, { pausa: v })} />
+                    <span className="text-sm text-muted-foreground">Almoço</span>
+                    {d.pausa && (<>
+                      <Input type="time" className="w-28" value={d.pausa_inicio ?? "12:00"} onChange={(e) => set(k, { pausa_inicio: e.target.value })} />
+                      <span className="text-sm text-muted-foreground">até</span>
+                      <Input type="time" className="w-28" value={d.pausa_fim ?? "13:00"} onChange={(e) => set(k, { pausa_fim: e.target.value })} />
+                    </>)}
+                  </div>
+                )}
               </div>
             );
           })}
