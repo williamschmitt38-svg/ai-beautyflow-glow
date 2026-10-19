@@ -17,6 +17,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { BloqueiosLista } from "@/components/HorariosSalao";
+import { DIAS_CURTOS, parseDias } from "@/lib/agenda";
 
 export const Route = createFileRoute("/app/profissionais")({ head: () => pageHead("Profissionais", "Profissionais: gestão de salões de beleza no GlowVitta."), component: Profissionais });
 
@@ -27,6 +30,8 @@ const schema = z.object({
   email: z.string().email().optional().or(z.literal("")),
   hora_inicio: z.string(),
   hora_fim: z.string(),
+  usa_horario_salao: z.boolean(),
+  dias_atendimento: z.array(z.number()),
 });
 type Form = z.infer<typeof schema>;
 
@@ -63,7 +68,8 @@ function Profissionais() {
 
   const save = useMutation({
     mutationFn: async (v: Form) => {
-      const payload = { ...v, company_id: salaoId!, email: v.email || null };
+      const { nome, especialidade, telefone, hora_inicio, hora_fim, usa_horario_salao, dias_atendimento } = v;
+      const payload = { nome, especialidade, telefone, hora_inicio, hora_fim, usa_horario_salao, dias_atendimento, company_id: salaoId!, email: v.email || null };
       const res = editing
         ? await supabase.from("profissional").update(payload).eq("id", editing.id)
         : await supabase.from("profissional").insert(payload);
@@ -100,7 +106,7 @@ function Profissionais() {
               </div>
 
               <div className="mt-4 space-y-1 text-xs text-muted-foreground">
-                <div className="flex items-center gap-2"><Clock className="h-3 w-3" /> {p.hora_inicio} – {p.hora_fim}</div>
+                <div className="flex items-center gap-2"><Clock className="h-3 w-3" /> {p.usa_horario_salao !== false ? "Horário do salão" : `${p.hora_inicio} – ${p.hora_fim}`}</div>
                 {p.telefone && <div className="flex items-center gap-2"><Phone className="h-3 w-3" /> {p.telefone}</div>}
                 {p.email && <div className="flex items-center gap-2"><Mail className="h-3 w-3" /> {p.email}</div>}
               </div>
@@ -133,17 +139,22 @@ function Profissionais() {
       </div>
 
       <FormDialog open={open} onOpenChange={setOpen} title={editing ? "Editar profissional" : "Novo profissional"}>
-        <ProfForm initial={editing} onSubmit={(v) => save.mutate(v)} loading={save.isPending} />
+        <ProfForm initial={editing} salaoId={salaoId!} onSubmit={(v) => save.mutate(v)} loading={save.isPending} />
       </FormDialog>
     </div>
   );
 }
 
-function ProfForm({ initial, onSubmit, loading }: { initial: any; onSubmit: (v: Form) => void; loading: boolean }) {
-  const { register, handleSubmit, formState: { errors } } = useForm<Form>({
+function ProfForm({ initial, onSubmit, loading, salaoId }: { initial: any; onSubmit: (v: Form) => void; loading: boolean; salaoId: string }) {
+  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<Form>({
     resolver: zodResolver(schema),
-    defaultValues: initial ?? { hora_inicio: "09:00", hora_fim: "18:00" },
+    defaultValues: initial
+      ? { ...initial, usa_horario_salao: initial.usa_horario_salao ?? true, dias_atendimento: Array.from(parseDias(initial.dias_atendimento) ?? [1, 2, 3, 4, 5, 6]) }
+      : { hora_inicio: "09:00", hora_fim: "18:00", usa_horario_salao: true, dias_atendimento: [1, 2, 3, 4, 5, 6] },
   });
+  const usaSalao = watch("usa_horario_salao");
+  const dias = watch("dias_atendimento") ?? [];
+  const toggleDia = (i: number) => setValue("dias_atendimento", dias.includes(i) ? dias.filter((d) => d !== i) : [...dias, i].sort());
   return (
     <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-2"><Label>Nome *</Label><Input {...register("nome")} />{errors.nome && <p className="text-xs text-destructive">{errors.nome.message}</p>}</div>
@@ -152,10 +163,30 @@ function ProfForm({ initial, onSubmit, loading }: { initial: any; onSubmit: (v: 
         <div className="space-y-2"><Label>Telefone</Label><Input {...register("telefone")} /></div>
         <div className="space-y-2"><Label>Email</Label><Input type="email" {...register("email")} /></div>
       </div>
-      <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-2"><Label>Hora início</Label><Input type="time" {...register("hora_inicio")} /></div>
-        <div className="space-y-2"><Label>Hora fim</Label><Input type="time" {...register("hora_fim")} /></div>
+      <div className="flex items-center justify-between rounded-lg border p-3">
+        <div><p className="text-sm font-medium">Seguir horário do salão</p><p className="text-xs text-muted-foreground">Usa o expediente de Configurações → Horários & Folgas</p></div>
+        <Switch checked={usaSalao} onCheckedChange={(v) => setValue("usa_horario_salao", v)} />
       </div>
+      {!usaSalao && (
+        <div className="space-y-3 rounded-lg border p-3">
+          <Label>Dias de atendimento</Label>
+          <div className="flex flex-wrap gap-1.5">
+            {DIAS_CURTOS.map((d, i) => (
+              <Button key={d} type="button" size="sm" variant={dias.includes(i) ? "default" : "outline"} onClick={() => toggleDia(i)}>{d}</Button>
+            ))}
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2"><Label>Hora início</Label><Input type="time" {...register("hora_inicio")} /></div>
+            <div className="space-y-2"><Label>Hora fim</Label><Input type="time" {...register("hora_fim")} /></div>
+          </div>
+        </div>
+      )}
+      {initial?.id && (
+        <div className="space-y-2 rounded-lg border p-3">
+          <Label>Dias indisponíveis (folgas, férias)</Label>
+          <BloqueiosLista salaoId={salaoId} profissionalId={initial.id} />
+        </div>
+      )}
       <Button type="submit" className="w-full" disabled={loading}>Salvar</Button>
     </form>
   );
