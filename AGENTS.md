@@ -15,3 +15,4 @@
 - Annual billing uses separate yearly Stripe prices on the same products; plan resolution maps both monthly and annual price IDs so existing subscriptions keep working.
 - AI features call the AI Gateway only from authenticated server functions that verify the salon's paid plan, so prompts and salon data never run in the browser.
 - AI Growth "contacted" marks are keyed by opportunity plus the client's last-visit (or year), so a new visit or new cycle surfaces the client again.
+- Salon schedule rules live in src/lib/agenda.ts (resolverJanela) and are applied server-side in public booking; salon-wide closures are agenda_bloqueio rows with null profissional_id, so one table covers holidays and individual days off.
