@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { UpgradeModal } from "@/components/UpgradeModal";
+import { ImportClientes } from "@/components/ImportClientes";
 
 export const Route = createFileRoute("/app/clientes")({ head: () => pageHead("Clientes", "Clientes: gestão de salões de beleza no GlowVitta."), component: Clientes });
 
@@ -48,6 +50,7 @@ function Clientes() {
   });
 
   const [detail, setDetail] = useState<any>(null);
+  const [upgrade, setUpgrade] = useState(false);
   const { data: plano } = useQuery({
     queryKey: ["salao-plano", salaoId], enabled: !!salaoId,
     queryFn: async () => {
@@ -115,7 +118,7 @@ function Clientes() {
       <PageHeader
         title="Clientes"
         description="Cadastro de clientes"
-        action={<NewButton label="Novo cliente" onClick={() => { setEditing(null); setOpen(true); }} />}
+        action={<div className="flex flex-wrap gap-2">{salaoId && <ImportClientes salaoId={salaoId} />}<NewButton label="Novo cliente" onClick={() => { setEditing(null); setOpen(true); }} /></div>}
       />
       <Card>
         <Table>
@@ -132,7 +135,7 @@ function Clientes() {
                 <TableCell>{c.telefone}</TableCell>
                 <TableCell>{c.email}</TableCell>
                 <TableCell className="whitespace-nowrap font-semibold">
-                  {unlocked ? brl(gastos?.[c.id]?.total ?? 0) : <Lock className="h-4 w-4 text-muted-foreground" aria-label="Disponível nos planos Pro e Enterprise" />}
+                  {unlocked ? brl(gastos?.[c.id]?.total ?? 0) : <button type="button" onClick={() => setUpgrade(true)} aria-label="Disponível nos planos Pro e Enterprise"><Lock className="h-4 w-4 text-muted-foreground" /></button>}
                 </TableCell>
                 <TableCell className="text-right">
                   <Button size="icon" variant="ghost" aria-label="Ver detalhes" onClick={() => setDetail(c)}>
@@ -153,6 +156,7 @@ function Clientes() {
           </TableBody>
         </Table>
       </Card>
+      <UpgradeModal open={upgrade} onOpenChange={setUpgrade} message="O Histórico de Gastos e o LTV de cada cliente são exclusivos dos planos Pro e Enterprise. Desbloqueie agora para saber quem são suas melhores clientes!" />
       <Dialog open={!!detail} onOpenChange={(o) => !o && setDetail(null)}>
         <DialogContent>
           <DialogHeader><DialogTitle>{detail?.nome}</DialogTitle></DialogHeader>
@@ -190,7 +194,7 @@ function Clientes() {
             <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed p-6 text-center">
               <Lock className="h-6 w-6 text-muted-foreground" />
               <p className="text-sm">O Histórico de Gastos e o LTV estão disponíveis nos planos Pro e Enterprise.</p>
-              <Button asChild><Link to="/app/configuracoes" search={{ tab: "cobranca" } as any}>Fazer upgrade</Link></Button>
+              <Button onClick={() => { setDetail(null); setUpgrade(true); }}>Fazer upgrade</Button>
             </div>
           )}
         </DialogContent>

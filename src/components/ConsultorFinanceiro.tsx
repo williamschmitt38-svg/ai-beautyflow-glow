@@ -1,3 +1,4 @@
+import { UpgradeButton } from "@/components/UpgradeModal";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
@@ -39,7 +40,7 @@ export function ConsultorFinanceiro({ salaoId, start, end }: { salaoId: string; 
         {!unlocked ? (
           <div className="flex flex-col items-start gap-3 text-sm text-muted-foreground">
             <p className="flex items-center gap-2"><Lock className="h-4 w-4" /> Pergunte sobre seus custos e lucro e receba uma análise prática. Disponível nos planos Pro e Enterprise.</p>
-            <Button asChild size="sm"><Link to="/app/configuracoes" search={{ tab: "cobranca" } as any}>Fazer upgrade para o Pro</Link></Button>
+            <UpgradeButton message="O Consultor financeiro com Inteligência Artificial é exclusivo dos planos Pro e Enterprise. Desbloqueie agora para receber análises práticas dos seus custos e lucros!" />
           </div>
         ) : (
           <>

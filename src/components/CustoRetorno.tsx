@@ -1,3 +1,4 @@
+import { UpgradeButton } from "@/components/UpgradeModal";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Lock, TrendingUp, TrendingDown, PiggyBank, Percent } from "lucide-react";
@@ -30,7 +31,7 @@ export function CustoRetorno({ salaoId, mStart, mEnd, despesasList }: { salaoId:
         <Lock className="h-8 w-8 text-muted-foreground" />
         <h3 className="text-lg font-semibold">Dashboard de Custos vs Retorno</h3>
         <p className="max-w-md text-sm text-muted-foreground">Veja quanto você gasta em materiais, produtos e divulgação e quanto isso retorna em atendimentos. Disponível nos planos Pro e Enterprise.</p>
-        <Button asChild><Link to="/app/configuracoes" search={{ tab: "cobranca" } as any}>Fazer upgrade para o Pro</Link></Button>
+        <UpgradeButton message="O Dashboard de Custos vs Retorno é exclusivo dos planos Pro e Enterprise. Desbloqueie agora para ver quanto cada real investido volta em atendimentos!" />
       </CardContent>
     </Card>
   );
