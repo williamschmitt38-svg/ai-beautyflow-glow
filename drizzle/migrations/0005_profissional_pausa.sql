@@ -1,0 +1,1 @@
+ALTER TABLE public.profissional ADD COLUMN IF NOT EXISTS pausa_inicio text, ADD COLUMN IF NOT EXISTS pausa_fim text;

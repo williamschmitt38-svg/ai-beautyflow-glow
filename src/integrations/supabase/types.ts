@@ -484,6 +484,8 @@ export type Database = {
           hora_inicio: string
           id: string
           nome: string
+          pausa_fim: string | null
+          pausa_inicio: string | null
           telefone: string | null
           updated_at: string
           usa_horario_salao: boolean
@@ -499,6 +501,8 @@ export type Database = {
           hora_inicio?: string
           id?: string
           nome: string
+          pausa_fim?: string | null
+          pausa_inicio?: string | null
           telefone?: string | null
           updated_at?: string
           usa_horario_salao?: boolean
@@ -514,6 +518,8 @@ export type Database = {
           hora_inicio?: string
           id?: string
           nome?: string
+          pausa_fim?: string | null
+          pausa_inicio?: string | null
           telefone?: string | null
           updated_at?: string
           usa_horario_salao?: boolean
