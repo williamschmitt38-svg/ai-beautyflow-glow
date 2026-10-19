@@ -173,6 +173,7 @@ function InsightCard({ ins, salaoId, paid, expanded, onToggle }: { ins: Insight;
   }
   return (
     <Card className="overflow-hidden transition hover:shadow-md">
+      <UpgradeModal open={upgrade} onOpenChange={setUpgrade} message="A personalização de mensagens com Inteligência Artificial é exclusiva dos planos Pro e Enterprise. Desbloqueie agora para falar com suas clientes usando o histórico real de atendimentos!" />
       <CardContent className="p-0">
         <button onClick={onToggle} className="flex w-full items-center justify-between gap-4 p-5 text-left">
           <div className="flex min-w-0 items-start gap-4">
