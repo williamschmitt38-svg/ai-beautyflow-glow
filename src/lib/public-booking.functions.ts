@@ -30,27 +30,20 @@ export const getAvailableSlots = createServerFn({ method: "GET" })
   }).parse(v))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: salao } = await supabaseAdmin.from("salao").select("id").eq("slug", data.slug).maybeSingle();
+    const { data: salao } = await supabaseAdmin.from("salao").select("id, horarios_funcionamento").eq("slug", data.slug).maybeSingle();
     if (!salao) throw new Error("Salão não encontrado");
-    const [{ data: prof }, { data: servico }] = await Promise.all([
-      supabaseAdmin.from("profissional").select("hora_inicio, hora_fim, dias_atendimento").eq("id", data.profissional_id).eq("company_id", salao.id).maybeSingle(),
+    const [{ data: prof }, { data: servico }, { data: bloqueios }] = await Promise.all([
+      supabaseAdmin.from("profissional").select("hora_inicio, hora_fim, dias_atendimento, usa_horario_salao").eq("id", data.profissional_id).eq("company_id", salao.id).maybeSingle(),
       supabaseAdmin.from("servico").select("duracao_minutos").eq("id", data.servico_id).eq("company_id", salao.id).maybeSingle(),
+      supabaseAdmin.from("agenda_bloqueio").select("profissional_id, motivo").eq("company_id", salao.id).eq("data", data.data).or(`profissional_id.is.null,profissional_id.eq.${data.profissional_id}`),
     ]);
     if (!prof || !servico) throw new Error("Profissional ou serviço inválido");
 
-    // Day-of-week check (dias_atendimento jsonb: array of 0-6 or named days)
-    const dow = new Date(data.data + "T00:00:00").getDay();
-    const dias = prof.dias_atendimento as any;
-    if (Array.isArray(dias) && dias.length > 0) {
-      const map: Record<string, number> = { dom: 0, seg: 1, ter: 2, qua: 3, qui: 4, sex: 5, sab: 6 };
-      const ok = dias.some((d: any) => (typeof d === "number" ? d === dow : map[String(d).toLowerCase().slice(0, 3)] === dow));
-      if (!ok) return { slots: [] as string[] };
-    }
-
-    const [hi, mi] = String(prof.hora_inicio ?? "09:00").split(":").map(Number);
-    const [hf, mf] = String(prof.hora_fim ?? "18:00").split(":").map(Number);
-    const inicio = hi * 60 + mi;
-    const fim = hf * 60 + mf;
+    const { resolverJanela } = await import("@/lib/agenda");
+    const janela = resolverJanela({ data: data.data, semanaSalao: salao.horarios_funcionamento, prof, bloqueios: bloqueios ?? [] });
+    if (!janela.aberto) return { slots: [] as string[], motivo: janela.motivo };
+    const inicio = janela.inicio;
+    const fim = janela.fim;
     const dur = servico.duracao_minutos ?? 60;
     const step = 30;
 
@@ -76,7 +69,7 @@ export const getAvailableSlots = createServerFn({ method: "GET" })
       const conflito = ocupados.some((o) => t < o.fim && o.ini < t + dur);
       if (!conflito) slots.push(`${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`);
     }
-    return { slots };
+    return { slots, motivo: slots.length ? undefined : "Nenhum horário livre nesta data." };
   });
 
 const agendamentoSchema = z.object({
