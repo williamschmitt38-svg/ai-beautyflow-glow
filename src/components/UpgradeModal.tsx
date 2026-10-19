@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Crown, Check } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -31,4 +32,9 @@ export function UpgradeModal({ open, onOpenChange, message }: { open: boolean; o
       </DialogContent>
     </Dialog>
   );
+}
+
+export function UpgradeButton({ message, label = "Fazer upgrade para o Pro" }: { message: string; label?: string }) {
+  const [open, setOpen] = useState(false);
+  return (<><Button size="sm" onClick={() => setOpen(true)}>{label}</Button><UpgradeModal open={open} onOpenChange={setOpen} message={message} /></>);
 }
