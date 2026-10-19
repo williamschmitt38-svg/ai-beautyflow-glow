@@ -87,13 +87,14 @@ export const createPublicAgendamento = createServerFn({ method: "POST" })
   .inputValidator((v) => agendamentoSchema.parse(v))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: salao, error: e1 } = await supabaseAdmin.from("salao").select("id").eq("slug", data.slug).maybeSingle();
+    const { data: salao, error: e1 } = await supabaseAdmin.from("salao").select("id, horarios_funcionamento").eq("slug", data.slug).maybeSingle();
     if (e1) throw new Error(e1.message);
     if (!salao) throw new Error("Salão não encontrado");
 
-    const [{ data: servico }, { data: prof }] = await Promise.all([
+    const [{ data: servico }, { data: prof }, { data: bloqueios }] = await Promise.all([
       supabaseAdmin.from("servico").select("id, nome, valor, duracao_minutos").eq("id", data.servico_id).eq("company_id", salao.id).maybeSingle(),
-      supabaseAdmin.from("profissional").select("id, nome").eq("id", data.profissional_id).eq("company_id", salao.id).maybeSingle(),
+      supabaseAdmin.from("profissional").select("id, nome, hora_inicio, hora_fim, dias_atendimento, usa_horario_salao").eq("id", data.profissional_id).eq("company_id", salao.id).maybeSingle(),
+      supabaseAdmin.from("agenda_bloqueio").select("profissional_id, motivo").eq("company_id", salao.id).eq("data", data.data).or(`profissional_id.is.null,profissional_id.eq.${data.profissional_id}`),
     ]);
     if (!servico || !prof) throw new Error("Serviço ou profissional inválido");
 
@@ -101,6 +102,10 @@ export const createPublicAgendamento = createServerFn({ method: "POST" })
     const [hh, mm] = data.hora.split(":").map(Number);
     const novoInicio = hh * 60 + mm;
     const novoFim = novoInicio + (servico.duracao_minutos ?? 60);
+    const { resolverJanela } = await import("@/lib/agenda");
+    const janela = resolverJanela({ data: data.data, semanaSalao: salao.horarios_funcionamento, prof, bloqueios: bloqueios ?? [] });
+    if (!janela.aberto) throw new Error(janela.motivo);
+    if (novoInicio < janela.inicio || novoFim > janela.fim) throw new Error("Horário fora do expediente.");
     const { data: conflitos } = await supabaseAdmin
       .from("agendamento")
       .select("hora, duracao_minutos, status")
