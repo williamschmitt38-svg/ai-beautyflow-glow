@@ -11,7 +11,7 @@ const beneficios = [
   "Consultor financeiro com IA",
 ];
 
-export function UpgradeModal({ open, onOpenChange, message }: { open: boolean; onOpenChange: (o: boolean) => void; message: string }) {
+export function UpgradeModal({ open, onOpenChange, message, badge = "Exclusivo Pro & Enterprise" }: { open: boolean; onOpenChange: (o: boolean) => void; message: string; badge?: string }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -19,7 +19,7 @@ export function UpgradeModal({ open, onOpenChange, message }: { open: boolean; o
           <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
             <Crown className="h-6 w-6 text-primary" />
           </div>
-          <p className="text-center text-xs font-semibold uppercase tracking-wider text-primary">Exclusivo Pro & Enterprise</p>
+          <p className="text-center text-xs font-semibold uppercase tracking-wider text-primary">{badge}</p>
           <DialogTitle className="text-center">Desbloqueie este recurso</DialogTitle>
           <DialogDescription className="text-center">{message}</DialogDescription>
         </DialogHeader>
