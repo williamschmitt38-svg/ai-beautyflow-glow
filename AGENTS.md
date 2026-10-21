@@ -16,3 +16,5 @@
 - AI features call the AI Gateway only from authenticated server functions that verify the salon's paid plan, so prompts and salon data never run in the browser.
 - AI Growth "contacted" marks are keyed by opportunity plus the client's last-visit (or year), so a new visit or new cycle surfaces the client again.
 - Salon schedule rules live in src/lib/agenda.ts (resolverJanela) and are applied server-side in public booking; salon-wide closures are agenda_bloqueio rows with null profissional_id, so one table covers holidays and individual days off.
+- Enterprise-only salon fields (white-label flag, webhook URL) are guarded by a database trigger on salao, and webhooks are dispatched only server-side, so tenants cannot enable them by editing rows or exposing URLs to the browser.
+- Salon logos live in a private, salon-scoped storage bucket and are stored as long-lived signed URLs, because the workspace blocks public buckets.

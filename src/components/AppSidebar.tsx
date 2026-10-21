@@ -8,8 +8,7 @@ import {
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/useAuth";
-import { useSalao } from "@/hooks/useSalao";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { BranchSwitcher } from "@/components/BranchSwitcher";
 
 const grupos = [
   {
@@ -44,7 +43,6 @@ const grupos = [
 export function AppSidebar() {
   const path = useRouterState({ select: (r) => r.location.pathname });
   const { signOut, user, isSuperAdmin } = useAuth();
-  const { saloes, salaoId, setSalaoId } = useSalao();
 
   return (
     <Sidebar collapsible="icon">
@@ -55,16 +53,7 @@ export function AppSidebar() {
           </div>
           <span className="font-semibold">GlowVitta</span>
         </div>
-        {saloes.length > 1 && (
-          <div className="px-2 pb-2">
-            <Select value={salaoId ?? ""} onValueChange={setSalaoId}>
-              <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Salão" /></SelectTrigger>
-              <SelectContent>
-                {saloes.map((s) => <SelectItem key={s.id} value={s.id}>{s.nome_salao}</SelectItem>)}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
+        <BranchSwitcher />
       </SidebarHeader>
       <SidebarContent>
         {grupos.map((g) => (

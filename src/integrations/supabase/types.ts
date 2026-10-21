@@ -549,6 +549,7 @@ export type Database = {
           owner_email: string | null
           owner_nome: string | null
           plano: Database["public"]["Enums"]["plano_enum"]
+          remover_marca: boolean
           slug: string | null
           status: Database["public"]["Enums"]["salao_status_enum"]
           status_cobranca: Database["public"]["Enums"]["status_cobranca_enum"]
@@ -557,6 +558,7 @@ export type Database = {
           ultimo_acesso: string | null
           updated_at: string
           valor_plano: number
+          webhook_url: string | null
           whatsapp: string | null
         }
         Insert: {
@@ -573,6 +575,7 @@ export type Database = {
           owner_email?: string | null
           owner_nome?: string | null
           plano?: Database["public"]["Enums"]["plano_enum"]
+          remover_marca?: boolean
           slug?: string | null
           status?: Database["public"]["Enums"]["salao_status_enum"]
           status_cobranca?: Database["public"]["Enums"]["status_cobranca_enum"]
@@ -581,6 +584,7 @@ export type Database = {
           ultimo_acesso?: string | null
           updated_at?: string
           valor_plano?: number
+          webhook_url?: string | null
           whatsapp?: string | null
         }
         Update: {
@@ -597,6 +601,7 @@ export type Database = {
           owner_email?: string | null
           owner_nome?: string | null
           plano?: Database["public"]["Enums"]["plano_enum"]
+          remover_marca?: boolean
           slug?: string | null
           status?: Database["public"]["Enums"]["salao_status_enum"]
           status_cobranca?: Database["public"]["Enums"]["status_cobranca_enum"]
@@ -605,6 +610,7 @@ export type Database = {
           ultimo_acesso?: string | null
           updated_at?: string
           valor_plano?: number
+          webhook_url?: string | null
           whatsapp?: string | null
         }
         Relationships: []

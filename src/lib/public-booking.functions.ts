@@ -7,7 +7,7 @@ export const getPublicSalao = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: salao, error } = await supabaseAdmin
       .from("salao")
-      .select("id, nome_salao, nome_fantasia, slug, cor_primaria, logo_url, telefone, whatsapp, endereco")
+      .select("id, nome_salao, nome_fantasia, slug, cor_primaria, logo_url, telefone, whatsapp, endereco, remover_marca, plano")
       .eq("slug", data.slug)
       .maybeSingle();
     if (error) throw new Error(error.message);
@@ -88,7 +88,7 @@ export const createPublicAgendamento = createServerFn({ method: "POST" })
   .inputValidator((v) => agendamentoSchema.parse(v))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: salao, error: e1 } = await supabaseAdmin.from("salao").select("id, horarios_funcionamento").eq("slug", data.slug).maybeSingle();
+    const { data: salao, error: e1 } = await supabaseAdmin.from("salao").select("id, horarios_funcionamento, plano, webhook_url").eq("slug", data.slug).maybeSingle();
     if (e1) throw new Error(e1.message);
     if (!salao) throw new Error("Salão não encontrado");
 
@@ -147,6 +147,13 @@ export const createPublicAgendamento = createServerFn({ method: "POST" })
       status: "agendado",
     }).select("id, data, hora").single();
     if (ea) throw new Error(ea.message);
+    if (salao.plano === "enterprise" && salao.webhook_url) {
+      const { dispatchSalonWebhook } = await import("./webhook.server");
+      await dispatchSalonWebhook(salao.webhook_url, "agendamento.criado", {
+        agendamento_id: ag.id, cliente_nome: data.cliente_nome, cliente_telefone: data.cliente_telefone,
+        servico_nome: servico.nome, profissional_nome: prof.nome, data: ag.data, hora: ag.hora, valor: servico.valor,
+      });
+    }
     return { ok: true, agendamento: ag };
   });
 
