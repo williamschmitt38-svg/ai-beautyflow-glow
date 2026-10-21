@@ -279,3 +279,15 @@ function AgendarPublic() {
     </div>
   );
 }
+
+function WhiteLabelHead({ salao }: { salao: any }) {
+  useEffect(() => {
+    const nome = salao.nome_fantasia || salao.nome_salao;
+    const wl = salao.remover_marca && salao.plano === "enterprise";
+    document.title = wl ? `Agendar · ${nome}` : `Agendar · ${nome} — GlowVitta`;
+    if (wl && salao.logo_url) {
+      document.querySelectorAll("link[rel~='icon']").forEach((l) => l.setAttribute("href", salao.logo_url));
+    }
+  }, [salao]);
+  return null;
+}
