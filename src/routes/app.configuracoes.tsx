@@ -7,6 +7,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { SalonBilling } from "@/components/SalonBilling";
 import { HorariosSalao } from "@/components/HorariosSalao";
+import { AparenciaForm, IntegracoesTab } from "@/components/EnterpriseSettings";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useSalao } from "@/hooks/useSalao";
@@ -53,11 +54,12 @@ function Configuracoes() {
     <div className="max-w-4xl space-y-6">
       <PageHeader title="Configurações" description="Gerencie seu salão" />
       <Tabs defaultValue={tab}>
-        <TabsList>
+        <TabsList className="h-auto flex-wrap justify-start">
           <TabsTrigger value="salao">Salão</TabsTrigger>
           <TabsTrigger value="aparencia">Aparência</TabsTrigger>
           <TabsTrigger value="divulgacao">Divulgação</TabsTrigger>
           <TabsTrigger value="horarios">Horários & Folgas</TabsTrigger>
+          <TabsTrigger value="integracoes">Integrações</TabsTrigger>
           <TabsTrigger value="cobranca">Cobrança</TabsTrigger>
           <TabsTrigger value="perfil">Perfil</TabsTrigger>
         </TabsList>
@@ -82,6 +84,10 @@ function Configuracoes() {
 
         <TabsContent value="horarios">
           {salao && <HorariosSalao salao={salao} />}
+        </TabsContent>
+
+        <TabsContent value="integracoes">
+          {salao && <IntegracoesTab salao={salao} onSaved={() => qc.invalidateQueries({ queryKey: ["salao"] })} />}
         </TabsContent>
 
         <TabsContent value="cobranca">
@@ -124,26 +130,6 @@ function SalaoForm({ initial, salaoId, onSaved }: any) {
       <div className="space-y-2"><Label>Slug público</Label><Input {...register("slug")} placeholder="meu-salao" /></div>
       <Button type="submit" disabled={isSubmitting}>Salvar</Button>
     </form>
-  );
-}
-
-function AparenciaForm({ salao, onSaved }: any) {
-  const [cor, setCor] = useState<string>(salao.cor_primaria);
-  const [logo, setLogo] = useState<string>(salao.logo_url ?? "");
-  const [loading, setLoading] = useState(false);
-  async function save() {
-    setLoading(true);
-    const { error } = await supabase.from("salao").update({ cor_primaria: cor, logo_url: logo || null }).eq("id", salao.id);
-    setLoading(false);
-    if (error) return toast.error(error.message);
-    toast.success("Aparência atualizada"); onSaved();
-  }
-  return (
-    <div className="space-y-4">
-      <div className="space-y-2"><Label>Cor primária</Label><div className="flex items-center gap-3"><Input type="color" value={cor} onChange={(e: any) => setCor(e.target.value)} className="h-10 w-20 p-1" /><Input value={cor} onChange={(e: any) => setCor(e.target.value)} className="max-w-xs" /></div></div>
-      <div className="space-y-2"><Label>URL do logo</Label><Input value={logo} onChange={(e: any) => setLogo(e.target.value)} placeholder="https://…" /></div>
-      <Button onClick={save} disabled={loading}>Salvar</Button>
-    </div>
   );
 }
 
