@@ -128,7 +128,10 @@ function AgendarPublic() {
     <div className="min-h-screen bg-surface">
       <header className="border-b bg-background px-6 py-4">
         <div className="mx-auto flex max-w-3xl items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary text-primary-foreground"><Sparkles className="h-5 w-5" /></div>
+          {salaoData.salao.logo_url
+            ? <img src={salaoData.salao.logo_url} alt={salaoData.salao.nome_fantasia || salaoData.salao.nome_salao} className="h-10 w-10 rounded-full object-cover" />
+            : <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary text-primary-foreground"><Sparkles className="h-5 w-5" /></div>}
+          <WhiteLabelHead salao={salaoData.salao} />
           <div className="flex-1">
             <div className="text-lg font-semibold">{salaoData.salao.nome_fantasia || salaoData.salao.nome_salao}</div>
             {salaoData.salao.endereco && <div className="text-xs text-muted-foreground">{salaoData.salao.endereco}</div>}
@@ -270,6 +273,9 @@ function AgendarPublic() {
           )}
         </div>
       </main>
+      {!(salaoData.salao.remover_marca && salaoData.salao.plano === "enterprise") && (
+        <footer className="py-6 text-center text-xs text-muted-foreground">Agendamento online por GlowVitta</footer>
+      )}
     </div>
   );
 }
